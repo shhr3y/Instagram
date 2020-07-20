@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class SignupController: UIViewController {
     //MARK: - Properties
@@ -26,24 +27,36 @@ class SignupController: UIViewController {
     private let emailTextField: UITextField = {
         let tf = UITextField().textField(withPlaceholder: "Email", isSecureText: false)
         tf.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        tf.addTarget(self, action: #selector(formValidation), for: .editingChanged)
+        
         return tf
     }()
     
     private let fullnameTextField: UITextField = {
         let tf = UITextField().textField(withPlaceholder: "Full Name", isSecureText: false)
         tf.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        tf.addTarget(self, action: #selector(formValidation), for: .editingChanged)
+        
         return tf
     }()
     
     private let usernameTextField: UITextField = {
         let tf = UITextField().textField(withPlaceholder: "Username", isSecureText: false)
         tf.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        tf.addTarget(self, action: #selector(formValidation), for: .editingChanged)
+        
         return tf
     }()
     
     private let passwordTextField: UITextField = {
         let tf = UITextField().textField(withPlaceholder: "Password", isSecureText: true)
         tf.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        tf.addTarget(self, action: #selector(formValidation), for: .editingChanged)
+        
         return tf
     }()
     
@@ -51,10 +64,14 @@ class SignupController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle("Sign Up", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = UIColor.mainBlueTint
+        button.backgroundColor = UIColor.dullBlueColor
         button.layer.cornerRadius = 5
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.isEnabled = false
+        
+        button.addTarget(self, action: #selector(handleCreateUser), for: .touchUpInside)
+        
         return button
     }()
     
@@ -62,9 +79,9 @@ class SignupController: UIViewController {
         let button = UIButton(type: .system)
         let attributedTitle = NSMutableAttributedString(string: "Already have an account? ", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16), NSAttributedString.Key.foregroundColor: UIColor.lightGray])
         
-        attributedTitle.append(NSAttributedString(string: "Sign In", attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16), NSAttributedString.Key.foregroundColor: UIColor.mainBlueTint]))
+        attributedTitle.append(NSAttributedString(string: "Sign In", attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16), NSAttributedString.Key.foregroundColor: UIColor.blueTint]))
         
-                button.addTarget(self, action: #selector(handleShowSignIn), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleShowSignIn), for: .touchUpInside)
         
         button.setAttributedTitle(attributedTitle, for: .normal)
         return button
@@ -82,6 +99,26 @@ class SignupController: UIViewController {
     //MARK: - Selectors
     @objc func handleShowSignIn(){
         navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func handleCreateUser(){
+        guard let email = emailTextField.text else { return }
+        guard let password = passwordTextField.text else { return }
+        guard let username = usernameTextField.text else { return }
+        guard let fullname = fullnameTextField.text else { return }
+        
+        
+    }
+    
+    @objc func formValidation(){
+        guard emailTextField.hasText, fullnameTextField.hasText,
+            usernameTextField.hasText, passwordTextField.hasText else {
+                signupButton.isEnabled = false
+                signupButton.backgroundColor = UIColor.dullBlueColor
+                return
+        }
+        signupButton.isEnabled = true
+        signupButton.backgroundColor = UIColor.blueTint
     }
     
     //MARK: - Helper Functions
