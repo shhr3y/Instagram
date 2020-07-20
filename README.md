@@ -1,4 +1,4 @@
-# instagram
+# Instagram
 An iOS App similar to Instagram.\
 In this App user would be able to add posts, follow user, like and comment on posts, check each others profile and text each other. It will be an clone of one of the most trending app Instagram!
 
