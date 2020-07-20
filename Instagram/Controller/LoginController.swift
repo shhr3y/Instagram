@@ -35,7 +35,7 @@ class LoginController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle("Log In", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = UIColor.rgb(red: 149, green: 204, blue: 244)
+        button.backgroundColor = UIColor.mainBlueTint
         button.layer.cornerRadius = 5
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
@@ -76,6 +76,7 @@ class LoginController: UIViewController {
     func configureUI(){
         view.backgroundColor = .white
         navigationController?.navigationBar.isHidden = true
+        self.setupToHideKeyboardOnTapOnView()
         
         view.addSubview(instagramLogo)
         instagramLogo.anchor(top: view.safeAreaLayoutGuide.topAnchor, paddingTop: view.frame.height - (view.frame.height * 0.8))

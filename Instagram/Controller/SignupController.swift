@@ -51,7 +51,7 @@ class SignupController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle("Sign Up", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = UIColor.rgb(red: 149, green: 204, blue: 244)
+        button.backgroundColor = UIColor.mainBlueTint
         button.layer.cornerRadius = 5
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
@@ -87,6 +87,8 @@ class SignupController: UIViewController {
     //MARK: - Helper Functions
     
     func configureUI(){
+        self.setupToHideKeyboardOnTapOnView()
+        
         view.addSubview(instagramLogo)
         instagramLogo.anchor(top: view.safeAreaLayoutGuide.topAnchor, paddingTop: view.frame.height - (view.frame.height * 0.98))
         instagramLogo.setDimensions(height: 50, width: view.frame.width)
