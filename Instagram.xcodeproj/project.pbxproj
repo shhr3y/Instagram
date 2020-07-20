@@ -14,6 +14,7 @@
 		35E073DB24C59A560000596C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 35E073D924C59A560000596C /* LaunchScreen.storyboard */; };
 		35E073E624C59B0A0000596C /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E073E524C59B0A0000596C /* LoginController.swift */; };
 		35E073E924C59C440000596C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E073E824C59C440000596C /* Extensions.swift */; };
+		35E073EB24C5D7590000596C /* SignupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E073EA24C5D7590000596C /* SignupController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		35E073DC24C59A560000596C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		35E073E524C59B0A0000596C /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		35E073E824C59C440000596C /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		35E073EA24C5D7590000596C /* SignupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				35E073E524C59B0A0000596C /* LoginController.swift */,
+				35E073EA24C5D7590000596C /* SignupController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -176,6 +179,7 @@
 				35E073CF24C59A540000596C /* AppDelegate.swift in Sources */,
 				35E073E624C59B0A0000596C /* LoginController.swift in Sources */,
 				35E073D124C59A540000596C /* SceneDelegate.swift in Sources */,
+				35E073EB24C5D7590000596C /* SignupController.swift in Sources */,
 				35E073E924C59C440000596C /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

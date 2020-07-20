@@ -48,7 +48,7 @@ class LoginController: UIViewController {
         
         attributedTitle.append(NSAttributedString(string: "Sign Up", attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16), NSAttributedString.Key.foregroundColor: UIColor.mainBlueTint]))
         
-//        button.addTarget(self, action: #selector(handleShowSignUp), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleShowSignUp), for: .touchUpInside)
         
         button.setAttributedTitle(attributedTitle, for: .normal)
         return button
@@ -66,10 +66,16 @@ class LoginController: UIViewController {
     
     //MARK: - Selectors
     
+    @objc func handleShowSignUp(){
+        let vc = SignupController()
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
     
     //MARK: - Helper Functions
     func configureUI(){
         view.backgroundColor = .white
+        navigationController?.navigationBar.isHidden = true
         
         view.addSubview(instagramLogo)
         instagramLogo.anchor(top: view.safeAreaLayoutGuide.topAnchor, paddingTop: view.frame.height - (view.frame.height * 0.8))
