@@ -84,12 +84,16 @@ class LoginController: UIViewController {
     @objc func handleLogin(){
         guard let email = emailTextField.text else { return }
         guard let password = passwordTextField.text else { return }
+        
         Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
             if let error = error {
                 print("DEBUG: Error from handleLogin: \(error.localizedDescription)")
                 return
             }
             print("DEBUG: handleLogin Successful for : \(email)")
+            guard let mainTabVC = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController as? MainTabBarController else { return }
+            mainTabVC.checkIfTheUserIsLoggedIn()
+            self.dismiss(animated: true)
         }
     }
     

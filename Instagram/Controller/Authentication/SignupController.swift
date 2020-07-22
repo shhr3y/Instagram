@@ -116,9 +116,7 @@ class SignupController: UIViewController {
                 print("DEBUG: Error from createUser: \(error.localizedDescription)")
                 return
             }
-            //success
-            print("DEBUG: createUser Successful for : \(username)")
-            
+            //sucess
             //set profile image
             let profileImage = self.imageSelected ? self.profilePhotoButton.imageView?.image : UIImage(imageLiteralResourceName: "default_profile")
             
@@ -133,15 +131,11 @@ class SignupController: UIViewController {
                     print("DEBUG: Error uploading profile image: \(error.localizedDescription)")
                     return
                 }
-                print("DEBUG: ProfileImageUploaded Successfully")
-
                 Storage.storage().reference().child("profile_images").child(filename).downloadURL(completion: { (url, error) in
                     if let error = error {
                         print("DEBUG: Error downloading Profile Image URL: \(error.localizedDescription)")
                         return
                     }
-                    print("DEBUG: downloaded ProfileImageURL successfully")
-
                     guard let profileImageURL = url?.absoluteString else { return }
                     
                     let dictionaryValues = ["name": fullname, "username": username, "profileImageURL": profileImageURL]
@@ -151,6 +145,9 @@ class SignupController: UIViewController {
                     let values = [user.uid: dictionaryValues]
                     Database.database().reference().child("users").updateChildValues(values) { (error, ref) in
                         print("DEBUG: SUCCESSFULLY CREATED AND UPDATED DATA IN DATABASE")
+                        guard let mainTabVC = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController as? MainTabBarController else { return }
+                        mainTabVC.checkIfTheUserIsLoggedIn()
+                        self.dismiss(animated: true)
                     }
                 })
             }
