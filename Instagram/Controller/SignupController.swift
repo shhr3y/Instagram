@@ -11,6 +11,8 @@ import Firebase
 
 class SignupController: UIViewController {
     //MARK: - Properties
+    private var imageSelected: Bool = false
+    
     private let instagramLogo: UIImageView = {
         let iv =  UIImageView()
         iv.image = UIImage(imageLiteralResourceName: "instagram_logo_black")
@@ -21,6 +23,8 @@ class SignupController: UIViewController {
     private let profilePhotoButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(imageLiteralResourceName: "profile").withRenderingMode(.alwaysOriginal), for: .normal)
+        
+        button.addTarget(self, action: #selector(handleSelectProfilePhoto), for: .touchUpInside)
         return button
     }()
     
@@ -105,15 +109,61 @@ class SignupController: UIViewController {
         guard let email = emailTextField.text else { return }
         guard let password = passwordTextField.text else { return }
         guard let username = usernameTextField.text else { return }
-//        guard let fullname = fullnameTextField.text else { return }
+        guard let fullname = fullnameTextField.text else { return }
         
-        Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
+        Auth.auth().createUser(withEmail: email, password: password) { (result, error) in
             if let error = error {
-                print("DEBUG: Error from handleCreateUser: \(error.localizedDescription)")
+                print("DEBUG: Error from createUser: \(error.localizedDescription)")
                 return
             }
-            print("DEBUG: handleCreateUser Successful for : \(username)")
+            //success
+            print("DEBUG: createUser Successful for : \(username)")
+            
+            //set profile image
+            let profileImage = self.imageSelected ? self.profilePhotoButton.imageView?.image : UIImage(imageLiteralResourceName: "default_profile")
+            
+            //upload data
+            guard let uploadData = profileImage?.jpegData(compressionQuality: 0.3) else { return }
+            
+            //place data in firebase storage
+            let filename = NSUUID().uuidString
+            Storage.storage().reference().child("profile_images").child(filename).putData(uploadData, metadata: nil) { (data, error) in
+                //handle error
+                if let error = error {
+                    print("DEBUG: Error uploading profile image: \(error.localizedDescription)")
+                    return
+                }
+                print("DEBUG: ProfileImageUploaded Successfully")
+
+                Storage.storage().reference().child("profile_images").child(filename).downloadURL(completion: { (url, error) in
+                    if let error = error {
+                        print("DEBUG: Error downloading Profile Image URL: \(error.localizedDescription)")
+                        return
+                    }
+                    print("DEBUG: downloaded ProfileImageURL successfully")
+
+                    guard let profileImageURL = url?.absoluteString else { return }
+                    
+                    let dictionaryValues = ["name": fullname, "username": username, "profileImageURL": profileImageURL]
+                    
+                    //saving data to our database
+                    guard let user = result?.user else { return }
+                    let values = [user.uid: dictionaryValues]
+                    Database.database().reference().child("users").updateChildValues(values) { (error, ref) in
+                        print("DEBUG: SUCCESSFULLY CREATED AND UPDATED DATA IN DATABASE")
+                    }
+                })
+            }
         }
+    }
+    
+    @objc func handleSelectProfilePhoto(){
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true
+        imagePicker.modalPresentationStyle = .fullScreen
+        
+        self.present(imagePicker, animated: true, completion: nil)
     }
     
     @objc func formValidation(){
@@ -153,5 +203,28 @@ class SignupController: UIViewController {
         view.addSubview(alreadyHaveAnAccountButton)
         alreadyHaveAnAccountButton.anchor(bottom: view.safeAreaLayoutGuide.bottomAnchor, paddingBottom: 20)
         alreadyHaveAnAccountButton.centerX(inView: view)
+    }
+}
+
+
+
+//MARK: - Delegate UIImagePickerControllerDelegate
+
+extension SignupController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        guard let profileImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else {
+            imageSelected = false
+            return
+        }
+        
+        //configure profile photo image
+        profilePhotoButton.layer.cornerRadius = profilePhotoButton.frame.width / 2
+        profilePhotoButton.layer.masksToBounds = true
+        profilePhotoButton.layer.borderColor = UIColor.black.cgColor
+        profilePhotoButton.layer.borderWidth = 2
+        profilePhotoButton.setImage(profileImage.withRenderingMode(.alwaysOriginal), for: .normal)
+        imageSelected = true
+        self.dismiss(animated: true, completion: nil)
     }
 }
