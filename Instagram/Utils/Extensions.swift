@@ -153,3 +153,41 @@ extension UIColor {
     static let pulsatingFillColor = UIColor.rgb(red: 86, green: 30, blue: 63)
     static let dullBlueColor = UIColor.rgb(red: 149, green: 204, blue: 244)
 }
+
+var imageCache = [String: UIImage]()
+
+extension UIImageView {
+    func loadImage(from urlString: String){
+        
+        //check if image exists in cache
+        if let cachedImage = imageCache[urlString]{
+            self.image = cachedImage
+            return
+        }
+        //image does not exists in cache
+        // url for image
+        guard let url = URL(string: urlString) else { return }
+        
+        //fetch contents of url
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                print("DEBUG: Error from loadImage: \(error.localizedDescription)")
+                return
+            }
+            
+            //get image data
+            guard let imageData = data else { return }
+            
+            //create image from imageData
+            let image = UIImage(data: imageData)
+            
+            //set key and value for image cache
+            imageCache[url.absoluteString] = image
+            
+            // set out retrieved image
+            DispatchQueue.main.async {
+                self.image = image
+            }
+        }.resume()
+    }
+}

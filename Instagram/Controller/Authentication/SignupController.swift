@@ -40,9 +40,8 @@ class SignupController: UIViewController {
     private let fullnameTextField: UITextField = {
         let tf = UITextField().textField(withPlaceholder: "Full Name", isSecureText: false)
         tf.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
         tf.addTarget(self, action: #selector(formValidation), for: .editingChanged)
-        
+        tf.autocapitalizationType = .words
         return tf
     }()
     
