@@ -15,7 +15,7 @@ class UserProfileHeader: UICollectionViewCell {
     var user: User? {
         didSet{
             guard let name = user?.name else { return }
-            nameLabel.text = name
+            fullnameLabel.text = name
             
             guard let profileImageURL = user?.profileImageURL else { return }
             userProfileImageView.loadImage(from: profileImageURL)
@@ -30,9 +30,8 @@ class UserProfileHeader: UICollectionViewCell {
         return iv
     }()
     
-    private let nameLabel: UILabel = {
+    private let fullnameLabel: UILabel = {
         let label = UILabel()
-        
         label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         return label
     }()
@@ -134,8 +133,8 @@ class UserProfileHeader: UICollectionViewCell {
         userProfileImageView.setDimensions(height: 90, width: 90)
         userProfileImageView.layer.cornerRadius = 90/2
         
-        addSubview(nameLabel)
-        nameLabel.anchor(top: userProfileImageView.bottomAnchor,left: leftAnchor, paddingTop: 8, paddingLeft: 18)
+        addSubview(fullnameLabel)
+        fullnameLabel.anchor(top: userProfileImageView.bottomAnchor,left: leftAnchor, paddingTop: 8, paddingLeft: 18)
         
         let userStatusStack = UIStackView(arrangedSubviews: [postsLabel, followersLabel, followingLabel])
         userStatusStack.axis = .horizontal
