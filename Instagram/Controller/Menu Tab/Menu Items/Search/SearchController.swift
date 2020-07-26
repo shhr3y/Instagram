@@ -7,32 +7,57 @@
 //
 
 import UIKit
+import Firebase
 
 private let searchUserResuseIdentifier = "SearchUserCell"
 
 class SearchController: UITableViewController {
-
+    
+    //MARK: - Properties
+    private var allUsers = [User]()
+    
+    //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
         //registering cell
         tableView.register(SearchUserCell.self, forCellReuseIdentifier: searchUserResuseIdentifier)
+        //removing gray sepearators
+        tableView.separatorStyle = .none
         //set footer null
         tableView.tableFooterView = UIView()
-//        tableView.separatorInset = UIEdgeInsets(top: 0, left: 18, bottom: 0, right: 0)
-        tableView.separatorStyle = .none
         //configuiring UI
         configureUI()
     }
-
-    // MARK: - Table view data source
-
+    
+    //MARK: - Helper Functions
+    
+    func configureUI(){
+        configureNavgationController()
+        fetchAllUser()
+    }
+    
+    func configureNavgationController(){
+        navigationItem.title = "Explore"
+    }
+    
+    //MARK: - API
+    
+    func fetchAllUser(){
+        Service.shared.fetchAllUsers { (user) in
+            self.allUsers.append(user)
+            self.tableView.reloadData()
+        }
+    }
+    
+    // MARK: - DataSource TableViewDataSource
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return allUsers.count
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -41,17 +66,17 @@ class SearchController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: searchUserResuseIdentifier, for: indexPath) as! SearchUserCell
-        
+        cell.user = allUsers[indexPath.row]
         return cell
     }
     
-    //MARK: - Helper Functions
-    
-    func configureUI(){
-        configureNavgationController()
-    }
-    
-    func configureNavgationController(){
-        navigationItem.title = "Explore"
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let user = allUsers[indexPath.row]
+        
+        //create instance of user profile controller
+        let userProfileController = UserProfileController(collectionViewLayout: UICollectionViewFlowLayout())
+        userProfileController.userToLoadFromSearchVC = user
+        //push viewcontriller
+        navigationController?.pushViewController(userProfileController, animated: true)
     }
 }

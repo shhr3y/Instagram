@@ -7,13 +7,23 @@
 //
 
 import UIKit
+import Firebase
+
+protocol UserProfileHeaderDelegate: class {
+    func handleFollowersTapped(for header: UserProfileHeader)
+    func handleFollowingTapped(for header: UserProfileHeader)
+    func handleEditFollowTapped(for header: UserProfileHeader)
+    func setUserStats(for header: UserProfileHeader)
+}
 
 class UserProfileHeader: UICollectionViewCell {
     
     //MARK: - Properties
+    var delegate: UserProfileHeaderDelegate?
     
     var user: User? {
         didSet{
+            configureProfileFollowButton()
             guard let name = user?.name else { return }
             fullnameLabel.text = name
             
@@ -49,7 +59,7 @@ class UserProfileHeader: UICollectionViewCell {
         return label
     }()
     
-    private let followersLabel: UILabel = {
+    private lazy var followersLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -62,7 +72,7 @@ class UserProfileHeader: UICollectionViewCell {
         return label
     }()
     
-    private let followingLabel: UILabel = {
+    private lazy var followingLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -75,16 +85,18 @@ class UserProfileHeader: UICollectionViewCell {
         return label
     }()
     
-    private let editProfileButton: UIButton = {
+    lazy var editProfileFollowButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = .white
-        button.setTitle("Edit Profile", for: .normal)
+        button.setTitle("Loading", for: .normal)
         button.tintColor = .black
         button.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         
         button.layer.cornerRadius = 5
         button.layer.borderColor = UIColor.lightGray.cgColor
         button.layer.borderWidth = 1
+
+        button.addTarget(self, action: #selector(handleEditFollowTapped), for: .touchUpInside)
         return button
     }()
     
@@ -121,7 +133,21 @@ class UserProfileHeader: UICollectionViewCell {
     
     //MARK: - Selectors
     
+    @objc func handleFollowersTapped() {
+        delegate?.handleFollowersTapped(for: self)
+    }
     
+    @objc func handleFollowingTapped() {
+        delegate?.handleFollowingTapped(for: self)
+    }
+    
+    @objc func handleEditFollowTapped() {
+        delegate?.handleEditFollowTapped(for: self)
+    }
+    
+    func setUserStats(for user: User){
+        delegate?.setUserStats(for: self)
+    }
     //MARK: - Helper Functions
     
     func configureUI(){
@@ -136,13 +162,7 @@ class UserProfileHeader: UICollectionViewCell {
         addSubview(fullnameLabel)
         fullnameLabel.anchor(top: userProfileImageView.bottomAnchor,left: leftAnchor, paddingTop: 8, paddingLeft: 18)
         
-        let userStatusStack = UIStackView(arrangedSubviews: [postsLabel, followersLabel, followingLabel])
-        userStatusStack.axis = .horizontal
-        userStatusStack.distribution = .fillEqually
-        userStatusStack.spacing = 5
-        addSubview(userStatusStack)
-        userStatusStack.anchor(left: userProfileImageView.rightAnchor, right: rightAnchor, paddingLeft: 10, paddingRight: 10, height: 50)
-        userStatusStack.centerY(inView: userProfileImageView)
+        configureUserStats()
         
         let topDividerView = UIView()
         topDividerView.backgroundColor = .lightGray
@@ -163,11 +183,44 @@ class UserProfileHeader: UICollectionViewCell {
         topDividerView.anchor(top: bottomStack.topAnchor, left: leftAnchor, right: rightAnchor, height: 0.5)
         bottomDividerView.anchor(top: bottomStack.bottomAnchor, left: leftAnchor, right: rightAnchor, height: 0.5)
         
-        addSubview(editProfileButton)
-        editProfileButton.anchor(bottom: bottomStack.topAnchor, paddingTop: 20, paddingBottom: 8)
-        editProfileButton.setDimensions(height: 30, width: frame.width - 40)
-        editProfileButton.centerX(inView: self)
+        addSubview(editProfileFollowButton)
+        editProfileFollowButton.anchor(bottom: bottomStack.topAnchor, paddingTop: 20, paddingBottom: 8)
+        editProfileFollowButton.setDimensions(height: 30, width: frame.width - 40)
+        editProfileFollowButton.centerX(inView: self)
         
+    }
+    
+    func configureUserStats() {
+        let userStatusStack = UIStackView(arrangedSubviews: [postsLabel, followersLabel, followingLabel])
+        userStatusStack.axis = .horizontal
+        userStatusStack.distribution = .fillEqually
+        userStatusStack.spacing = 5
+        addSubview(userStatusStack)
+        userStatusStack.anchor(left: userProfileImageView.rightAnchor, right: rightAnchor, paddingLeft: 10, paddingRight: 10, height: 50)
+        userStatusStack.centerY(inView: userProfileImageView)
+    }
+    
+    func configureProfileFollowButton() {
+        guard let currentUser = Auth.auth().currentUser else { return }
+        guard let user = self.user else { return }
+        
+        if currentUser.uid == user.uid {
+            // config button as edit profile
+            editProfileFollowButton.setTitle("Edit Profile", for: .normal)
+        }else{
+            // config button as follow or unfollow
+            user.checkIfUserIsFollowed { (followStatus) in
+                if followStatus {
+                    self.editProfileFollowButton.setTitle("Following", for: .normal)
+                    self.editProfileFollowButton.setTitleColor(.white, for: .normal)
+                    self.editProfileFollowButton.backgroundColor = UIColor.rgb(red: 17, green: 154, blue: 237)
+                }else{
+                    self.editProfileFollowButton.setTitle("Follow", for: .normal)
+                    self.editProfileFollowButton.setTitleColor(.white, for: .normal)
+                    self.editProfileFollowButton.backgroundColor = UIColor.rgb(red: 17, green: 154, blue: 237)
+                }
+            }
+        }
     }
 
 }

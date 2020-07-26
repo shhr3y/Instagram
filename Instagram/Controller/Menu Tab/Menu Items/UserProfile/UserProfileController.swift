@@ -15,7 +15,8 @@ private let headerIdentifier = "UserProfileHeader"
 class UserProfileController: UICollectionViewController {
 
     //MARK: - Properties
-    var user: User?
+    var currentUser: User?
+    var userToLoadFromSearchVC: User?
     
     //MARK: - Lifecycle
     
@@ -28,7 +29,10 @@ class UserProfileController: UICollectionViewController {
         self.collectionView!.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerIdentifier)
         
         configureUI()
-        fetchCurrentUserData()
+        
+        if userToLoadFromSearchVC == nil {
+            fetchCurrentUserData()
+        }
     }
     
     //MARK: - Selectors
@@ -37,18 +41,11 @@ class UserProfileController: UICollectionViewController {
     //MARK: - API
     
     func fetchCurrentUserData() {
-        
         guard let currentUser = Auth.auth().currentUser else { return }
-        
-        Database.database().reference().child("users").child(currentUser.uid).observeSingleEvent(of: .value) { (snapshot) in
-            guard let userDictionary = snapshot.value as? [String: Any] else { return }
-            guard let uid = Auth.auth().currentUser?.uid else { return }
-            
-            let user = User(uid: uid, dictionary: userDictionary)
 
+        Service.shared.fetchUserData(forUID: currentUser.uid) { (user) in
             self.navigationItem.title = user.username
-            
-            self.user = user
+            self.currentUser = user
             self.collectionView.reloadData()
         }
     }
@@ -74,8 +71,16 @@ class UserProfileController: UICollectionViewController {
         //declare header
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerIdentifier, for: indexPath) as! UserProfileHeader
         
-        if let user = self.user {
-            header.user = user
+        //set delegate
+        header.delegate = self
+        
+        //set user in header
+        if let currentUser = self.currentUser {
+            header.user = currentUser
+        }
+        else if let userToLoadFromSearchVC = self.userToLoadFromSearchVC {
+            header.user = userToLoadFromSearchVC
+            navigationItem.title = userToLoadFromSearchVC.username
         }
         
         // return header
@@ -88,9 +93,46 @@ class UserProfileController: UICollectionViewController {
     }
 }
 
-
+//MARK: - Delegate UICollectionViewDelegateFlowLayout
+//setting height for the header
 extension UserProfileController: UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: view.frame.width, height: (view.frame.height - (view.frame.height * 0.755)))
+    }
+}
+
+//MARK: - Delegate UserProfileDelegate
+extension UserProfileController: UserProfileHeaderDelegate {
+    func handleFollowersTapped(for header: UserProfileHeader) {
+        print("DEBUG: Handle handleFollowersTapped")
+    }
+    
+    func handleFollowingTapped(for header: UserProfileHeader) {
+        print("DEBUG: Handle handleFollowingTapped")
+    }
+    
+    func handleEditFollowTapped(for header: UserProfileHeader) {
+        print("DEBUG: handleEditFollowTapped is called")
+        guard let user = header.user else { return }
+        
+        if header.editProfileFollowButton.titleLabel?.text == "Edit Profile" {
+            //handle show edit profile controller
+            print("DEBUG: Edit Profile Tapped")
+
+        }else{
+            //handle user follow/unfollow
+            if header.editProfileFollowButton.titleLabel?.text == "Follow" {
+                header.editProfileFollowButton.setTitle("Following", for: .normal)
+                user.follow()
+            }else{
+                header.editProfileFollowButton.setTitle("Follow", for: .normal)
+                user.unfollow()
+            }
+        }
+        
+    }
+    
+    func setUserStats(for: UserProfileHeader) {
+        print("DEBUG: Handle setUserStats")
     }
 }
