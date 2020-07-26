@@ -20,9 +20,8 @@ struct Service {
     func fetchUserData(forUID uid: String, completion: @escaping(User) -> Void){
         DB_REF_USERS.child(uid).observeSingleEvent(of: .value) { (snapshot) in
             guard let userDictionary = snapshot.value as? [String: Any] else { return }
-            guard let uid = Auth.auth().currentUser?.uid else { return }
             
-            let user = User(uid: uid, dictionary: userDictionary)
+            let user = User(uid: snapshot.key, dictionary: userDictionary)
             completion(user)
         }
     }
@@ -34,6 +33,22 @@ struct Service {
             
             let user = User(uid: uid, dictionary: dictionary)
             completion(user)
+        }
+    }
+    
+    func fetchUsers(type: FollowControllerType, forUID uid: String, completion: @escaping([String: Any]) -> Void){
+        let ref: DatabaseReference!
+        switch type {
+        case .follower:
+            ref = DB_REF_USER_FOLLOWER
+        case .following:
+            ref = DB_REF_USER_FOLLOWING
+        }
+        
+        ref.child(uid).observeSingleEvent(of: .value) { (snapshot) in
+            if let snapshot = snapshot.value as? [String: Any] {
+                completion(snapshot)
+            }
         }
     }
     

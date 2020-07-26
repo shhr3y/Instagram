@@ -35,15 +35,13 @@ class SearchUserCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         
-        
+        self.selectionStyle = .none
+
         addSubview(userProfileImageView)
         userProfileImageView.anchor(left: leftAnchor, paddingLeft: 8, width: 48, height: 48)
         userProfileImageView.centerY(inView: self)
         userProfileImageView.layer.cornerRadius = 48/2
         userProfileImageView.clipsToBounds = true
-        
-        self.textLabel?.text = "shhr3y"
-        self.detailTextLabel?.text = "Shrey Gupta"
     }
     
     override func layoutSubviews() {

@@ -75,7 +75,7 @@ class SearchController: UITableViewController {
         
         //create instance of user profile controller
         let userProfileController = UserProfileController(collectionViewLayout: UICollectionViewFlowLayout())
-        userProfileController.userToLoadFromSearchVC = user
+        userProfileController.user = user
         //push viewcontriller
         navigationController?.pushViewController(userProfileController, animated: true)
     }

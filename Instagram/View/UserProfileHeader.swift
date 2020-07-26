@@ -67,8 +67,13 @@ class UserProfileHeader: UICollectionViewCell {
         
         let attributedText = NSMutableAttributedString(string: "0\n", attributes: [NSMutableAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16)])
         attributedText.append(NSAttributedString(string: "Followers", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.black]))
-        
+
         label.attributedText = attributedText
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleFollowersTapped))
+        tapGesture.numberOfTapsRequired = 1
+        label.isUserInteractionEnabled = true
+        label.addGestureRecognizer(tapGesture)
         
         return label
     }()
@@ -82,6 +87,11 @@ class UserProfileHeader: UICollectionViewCell {
         attributedText.append(NSAttributedString(string: "Following", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.black]))
         
         label.attributedText = attributedText
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleFollowingTapped))
+        tapGesture.numberOfTapsRequired = 1
+        label.isUserInteractionEnabled = true
+        label.addGestureRecognizer(tapGesture)
         
         return label
     }()

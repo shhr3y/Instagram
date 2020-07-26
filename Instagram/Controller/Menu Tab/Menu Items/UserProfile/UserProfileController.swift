@@ -15,8 +15,8 @@ private let headerIdentifier = "UserProfileHeader"
 class UserProfileController: UICollectionViewController {
 
     //MARK: - Properties
-    var currentUser: User?
-    var userToLoadFromSearchVC: User?
+    var user: User?
+    
     
     //MARK: - Lifecycle
     
@@ -30,7 +30,7 @@ class UserProfileController: UICollectionViewController {
         
         configureUI()
         
-        if userToLoadFromSearchVC == nil {
+        if user == nil {
             fetchCurrentUserData()
         }
     }
@@ -45,7 +45,7 @@ class UserProfileController: UICollectionViewController {
 
         Service.shared.fetchUserData(forUID: currentUser.uid) { (user) in
             self.navigationItem.title = user.username
-            self.currentUser = user
+            self.user = user
             self.collectionView.reloadData()
         }
     }
@@ -75,13 +75,8 @@ class UserProfileController: UICollectionViewController {
         header.delegate = self
         
         //set user in header
-        if let currentUser = self.currentUser {
-            header.user = currentUser
-        }
-        else if let userToLoadFromSearchVC = self.userToLoadFromSearchVC {
-            header.user = userToLoadFromSearchVC
-            navigationItem.title = userToLoadFromSearchVC.username
-        }
+        header.user = self.user
+        navigationItem.title = self.user?.username
         
         // return header
         return header
@@ -102,14 +97,21 @@ extension UserProfileController: UICollectionViewDelegateFlowLayout{
 }
 
 //MARK: - Delegate UserProfileDelegate
+
 extension UserProfileController: UserProfileHeaderDelegate {
     
     func handleFollowersTapped(for header: UserProfileHeader) {
-        print("DEBUG: Handle handleFollowersTapped")
+        guard let user = header.user else { return }
+        
+        let followVC = FollowController(type: .follower, user: user)
+        navigationController?.pushViewController(followVC, animated: true)
     }
     
     func handleFollowingTapped(for header: UserProfileHeader) {
-        print("DEBUG: Handle handleFollowingTapped")
+        guard let user = header.user else { return }
+        
+        let followVC = FollowController(type: .following, user: user)
+        navigationController?.pushViewController(followVC, animated: true)
     }
     
     func handleEditFollowTapped(for header: UserProfileHeader) {
@@ -129,6 +131,7 @@ extension UserProfileController: UserProfileHeaderDelegate {
                 header.editProfileFollowButton.setTitle("Follow", for: .normal)
                 user.unfollow()
             }
+            header.setUserStats(for: user)
         }
     }
     
@@ -149,3 +152,4 @@ extension UserProfileController: UserProfileHeaderDelegate {
         }
     }
 }
+
