@@ -132,9 +132,20 @@ extension UserProfileController: UserProfileHeaderDelegate {
         }
     }
     
-    func setUserStats(for user: User, completion: @escaping ([String : Int]) -> Void) {
+    func setUserStats(for header: UserProfileHeader) {
+        guard let user = header.user else { return }
+        
         Service.shared.getUserStats(for: user.uid) { (stats) in
-            completion(stats)
+            guard let following = stats["noOfFollowing"] else { return }
+            guard let followers = stats["noOfFollowers"] else { return }
+            
+            let attributedFollowingText = NSMutableAttributedString(string: "\(following)\n", attributes: [NSMutableAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16)])
+            attributedFollowingText.append(NSAttributedString(string: "Following", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.black]))
+            header.followingLabel.attributedText = attributedFollowingText
+            
+            let attributedFollowerText = NSMutableAttributedString(string: "\(followers)\n", attributes: [NSMutableAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16)])
+            attributedFollowerText.append(NSAttributedString(string: "Followers", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.black]))
+            header.followersLabel.attributedText = attributedFollowerText
         }
     }
 }

@@ -13,7 +13,7 @@ protocol UserProfileHeaderDelegate: class {
     func handleFollowersTapped(for header: UserProfileHeader)
     func handleFollowingTapped(for header: UserProfileHeader)
     func handleEditFollowTapped(for header: UserProfileHeader)
-    func setUserStats(for user: User, completion: @escaping([String: Int]) ->Void)
+    func setUserStats(for header: UserProfileHeader)
 }
 
 class UserProfileHeader: UICollectionViewCell {
@@ -52,7 +52,7 @@ class UserProfileHeader: UICollectionViewCell {
         label.textAlignment = .center
         label.numberOfLines = 0
         
-        let attributedText = NSMutableAttributedString(string: "5\n", attributes: [NSMutableAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16)])
+        let attributedText = NSMutableAttributedString(string: "0\n", attributes: [NSMutableAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16)])
         attributedText.append(NSAttributedString(string: "Posts", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.black]))
         
         label.attributedText = attributedText
@@ -60,7 +60,7 @@ class UserProfileHeader: UICollectionViewCell {
         return label
     }()
     
-    private lazy var followersLabel: UILabel = {
+    lazy var followersLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -73,7 +73,7 @@ class UserProfileHeader: UICollectionViewCell {
         return label
     }()
     
-    private lazy var followingLabel: UILabel = {
+    lazy var followingLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -147,18 +147,7 @@ class UserProfileHeader: UICollectionViewCell {
     }
     
     func setUserStats(for user: User){
-        delegate?.setUserStats(for: user, completion: { (stats) in
-            guard let following = stats["noOfFollowing"] else { return }
-            guard let followers = stats["noOfFollowers"] else { return }
-            
-            let attributedFollowingText = NSMutableAttributedString(string: "\(following)\n", attributes: [NSMutableAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16)])
-            attributedFollowingText.append(NSAttributedString(string: "Following", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.black]))
-            self.followingLabel.attributedText = attributedFollowingText
-            
-            let attributedFollowerText = NSMutableAttributedString(string: "\(followers)\n", attributes: [NSMutableAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16)])
-            attributedFollowerText.append(NSAttributedString(string: "Followers", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.black]))
-            self.followersLabel.attributedText = attributedFollowerText
-        })
+        delegate?.setUserStats(for: self)
     }
     //MARK: - Helper Functions
     
