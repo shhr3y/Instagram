@@ -103,6 +103,7 @@ extension UserProfileController: UICollectionViewDelegateFlowLayout{
 
 //MARK: - Delegate UserProfileDelegate
 extension UserProfileController: UserProfileHeaderDelegate {
+    
     func handleFollowersTapped(for header: UserProfileHeader) {
         print("DEBUG: Handle handleFollowersTapped")
     }
@@ -129,10 +130,11 @@ extension UserProfileController: UserProfileHeaderDelegate {
                 user.unfollow()
             }
         }
-        
     }
     
-    func setUserStats(for: UserProfileHeader) {
-        print("DEBUG: Handle setUserStats")
+    func setUserStats(for user: User, completion: @escaping ([String : Int]) -> Void) {
+        Service.shared.getUserStats(for: user.uid) { (stats) in
+            completion(stats)
+        }
     }
 }

@@ -13,7 +13,7 @@ protocol UserProfileHeaderDelegate: class {
     func handleFollowersTapped(for header: UserProfileHeader)
     func handleFollowingTapped(for header: UserProfileHeader)
     func handleEditFollowTapped(for header: UserProfileHeader)
-    func setUserStats(for header: UserProfileHeader)
+    func setUserStats(for user: User, completion: @escaping([String: Int]) ->Void)
 }
 
 class UserProfileHeader: UICollectionViewCell {
@@ -23,12 +23,13 @@ class UserProfileHeader: UICollectionViewCell {
     
     var user: User? {
         didSet{
-            configureProfileFollowButton()
-            guard let name = user?.name else { return }
-            fullnameLabel.text = name
+            guard let user = user else { return }
             
-            guard let profileImageURL = user?.profileImageURL else { return }
-            userProfileImageView.loadImage(from: profileImageURL)
+            fullnameLabel.text = user.name
+            userProfileImageView.loadImage(from: user.profileImageURL)
+
+            setUserStats(for: user)
+            configureProfileFollowButton(for: user)
         }
     }
     
@@ -46,7 +47,7 @@ class UserProfileHeader: UICollectionViewCell {
         return label
     }()
     
-    private let postsLabel: UILabel = {
+    private lazy var postsLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -64,7 +65,7 @@ class UserProfileHeader: UICollectionViewCell {
         label.textAlignment = .center
         label.numberOfLines = 0
         
-        let attributedText = NSMutableAttributedString(string: "15\n", attributes: [NSMutableAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16)])
+        let attributedText = NSMutableAttributedString(string: "0\n", attributes: [NSMutableAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16)])
         attributedText.append(NSAttributedString(string: "Followers", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.black]))
         
         label.attributedText = attributedText
@@ -77,7 +78,7 @@ class UserProfileHeader: UICollectionViewCell {
         label.textAlignment = .center
         label.numberOfLines = 0
         
-        let attributedText = NSMutableAttributedString(string: "50\n", attributes: [NSMutableAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16)])
+        let attributedText = NSMutableAttributedString(string: "0\n", attributes: [NSMutableAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16)])
         attributedText.append(NSAttributedString(string: "Following", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.black]))
         
         label.attributedText = attributedText
@@ -146,7 +147,18 @@ class UserProfileHeader: UICollectionViewCell {
     }
     
     func setUserStats(for user: User){
-        delegate?.setUserStats(for: self)
+        delegate?.setUserStats(for: user, completion: { (stats) in
+            guard let following = stats["noOfFollowing"] else { return }
+            guard let followers = stats["noOfFollowers"] else { return }
+            
+            let attributedFollowingText = NSMutableAttributedString(string: "\(following)\n", attributes: [NSMutableAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16)])
+            attributedFollowingText.append(NSAttributedString(string: "Following", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.black]))
+            self.followingLabel.attributedText = attributedFollowingText
+            
+            let attributedFollowerText = NSMutableAttributedString(string: "\(followers)\n", attributes: [NSMutableAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16)])
+            attributedFollowerText.append(NSAttributedString(string: "Followers", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.black]))
+            self.followersLabel.attributedText = attributedFollowerText
+        })
     }
     //MARK: - Helper Functions
     
@@ -200,15 +212,15 @@ class UserProfileHeader: UICollectionViewCell {
         userStatusStack.centerY(inView: userProfileImageView)
     }
     
-    func configureProfileFollowButton() {
+    func configureProfileFollowButton(for user: User) {
         guard let currentUser = Auth.auth().currentUser else { return }
-        guard let user = self.user else { return }
         
         if currentUser.uid == user.uid {
             // config button as edit profile
             editProfileFollowButton.setTitle("Edit Profile", for: .normal)
         }else{
             // config button as follow or unfollow
+
             user.checkIfUserIsFollowed { (followStatus) in
                 if followStatus {
                     self.editProfileFollowButton.setTitle("Following", for: .normal)
@@ -222,5 +234,4 @@ class UserProfileHeader: UICollectionViewCell {
             }
         }
     }
-
 }

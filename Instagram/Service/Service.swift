@@ -52,6 +52,28 @@ struct Service {
             completion(snapshot.hasChild(userUID))
         }
     }
+    
+    func getUserStats(for uid: String, completion: @escaping([String: Int]) -> Void){
+        //get followers
+        var userStats = [String: Int]()
+        var noOfFollowers: Int = 0
+        var noOfFollowing: Int = 0
+
+        DB_REF_USER_FOLLOWER.child(uid).observeSingleEvent(of: .value) { (snapshot) in
+            if let snapshot = snapshot.value as? [String: Any] {
+                noOfFollowers = snapshot.count
+            }
+            
+            DB_REF_USER_FOLLOWING.child(uid).observeSingleEvent(of: .value) { (snapshot) in
+                if let snapshot = snapshot.value as? [String: Any] {
+                    noOfFollowing = snapshot.count
+                }
+                userStats["noOfFollowers"] = noOfFollowers
+                userStats["noOfFollowing"] = noOfFollowing
+                completion(userStats)
+            }
+        }
+    }
 }
 
 
