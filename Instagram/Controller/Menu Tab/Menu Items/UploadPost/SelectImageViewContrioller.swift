@@ -123,8 +123,7 @@ class SelectImageViewController: UICollectionViewController {
                 let selectedAsset = self.assets[index]
                 
                 let imageManager = PHImageManager.default()
-                let width = self.view.frame.width
-                let targetSize = CGSize(width: 1000, height: 600)
+                let targetSize = CGSize(width: 1000, height: 1000)
                 
                 imageManager.requestImage(for: selectedAsset, targetSize: targetSize, contentMode: .default, options: nil) { (image, info) in
                     guard let image = image else { return }
