@@ -36,9 +36,8 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
         let searchVC = SearchController()
         let searchNC = constructNavController(unselectedImage: #imageLiteral(resourceName: "search_unselected"), selectedImage: #imageLiteral(resourceName: "search_selected"), rootViewController: searchVC)
         
-        // Post Controller
-        let uploadPostVC = UploadPostController()
-        let uploadPostNC = constructNavController(unselectedImage: #imageLiteral(resourceName: "plus_unselected"), selectedImage: #imageLiteral(resourceName: "plus_unselected"), rootViewController: uploadPostVC)
+        // Select Image Post Controller
+        let uploadPostNC = constructNavController(unselectedImage: #imageLiteral(resourceName: "plus_unselected"), selectedImage: #imageLiteral(resourceName: "plus_unselected"))
         
         // Notification Controller
         let notificationVC = NotificationController()
@@ -53,6 +52,21 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
         
         // Tab Bar Tint color
         tabBar.tintColor = .black
+    }
+    
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        let index = viewControllers?.firstIndex(of: viewController)
+        
+        if index == 2 {
+            let uploadPostVC = SelectImageViewController(collectionViewLayout: UICollectionViewFlowLayout())
+            let navController = UINavigationController(rootViewController: uploadPostVC)
+            navController.modalPresentationStyle = .fullScreen
+            navController.navigationBar.tintColor = .black
+            
+            present(navController, animated: true, completion: nil)
+            return false
+        }
+        return true
     }
     
     func constructNavController(unselectedImage: UIImage, selectedImage: UIImage, rootViewController: UIViewController = UIViewController()) -> (UINavigationController){
