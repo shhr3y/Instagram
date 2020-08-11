@@ -16,7 +16,9 @@ class SelectImageViewController: UICollectionViewController {
     //MARK: - Properties
     var images = [UIImage]()
     var assets = [PHAsset]()
+    var selectedImageThumbnail: UIImage?
     var selectedImage: UIImage?
+    
     
     
     //MARK: - LifeCycle
@@ -25,7 +27,7 @@ class SelectImageViewController: UICollectionViewController {
         super.viewDidLoad()
         
         //configuring nav buttons
-        configureNavigationButtons()
+        configureNavigationBar()
         
         //fetching photos
         fetchPhotos()
@@ -44,12 +46,21 @@ class SelectImageViewController: UICollectionViewController {
     }
     
     @objc func handleNext() {
-        print("DEBUG: Handle Next Pressed")
+        //check wheather there is a selected image, if not return out of the function
+        guard let _ = self.selectedImage else { return }
+        
+        //if image is there, push UploadPostController to navigation controller
+        let controller = UploadPostController(image: self.selectedImage!)
+        navigationController?.pushViewController(controller, animated: true)
     }
     
     
     //MARK: - Helper Functions
-    func configureNavigationButtons() {
+    func configureNavigationBar() {
+        //configure navigation bar title
+        navigationItem.title = "Add Photo"
+        
+        //configure navigation bar buttons
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(handleNext))
     }
@@ -75,8 +86,10 @@ class SelectImageViewController: UICollectionViewController {
                     self.assets.append(asset)
                     
                     //set first image as selected image
-                    if self.selectedImage == nil {
-                        self.selectedImage = image
+                    if self.selectedImageThumbnail == nil {
+                        
+                        self.selectedImageThumbnail = image
+                        
                     }
                     
                     //reload collection view once count has completed
@@ -106,7 +119,8 @@ class SelectImageViewController: UICollectionViewController {
     }
     
     
-    //MARK: - DataSource UICollectionViewDataSource
+    //MARK: - CollectionViewDataSource UICollectionViewDataSource
+    
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -118,8 +132,10 @@ class SelectImageViewController: UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerIdentifier, for: indexPath) as! SelectPhotoHeader
         
-        if let selectedImage = self.selectedImage {
-            if let index = self.images.firstIndex(of: selectedImage) {
+        if let selectedImageThumbnail = self.selectedImageThumbnail {
+            
+            if let index = self.images.firstIndex(of: selectedImageThumbnail) {
+                
                 let selectedAsset = self.assets[index]
                 
                 let imageManager = PHImageManager.default()
@@ -128,6 +144,7 @@ class SelectImageViewController: UICollectionViewController {
                 imageManager.requestImage(for: selectedAsset, targetSize: targetSize, contentMode: .default, options: nil) { (image, info) in
                     guard let image = image else { return }
                     header.selectedImageView.image = image
+                    self.selectedImage = image
                 }
             }
         }
@@ -141,9 +158,14 @@ class SelectImageViewController: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.selectedImage = images[indexPath.row]
+        self.selectedImageThumbnail = images[indexPath.row]
+        
         self.collectionView.reloadData()
+        
+        let indexPath = IndexPath(item: 0, section: 0)
+        collectionView.scrollToItem(at: indexPath, at: .bottom, animated: true)
     }
+    
 }
 
 
