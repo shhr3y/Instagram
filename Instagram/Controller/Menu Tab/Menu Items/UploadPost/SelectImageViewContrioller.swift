@@ -47,10 +47,10 @@ class SelectImageViewController: UICollectionViewController {
     
     @objc func handleNext() {
         //check wheather there is a selected image, if not return out of the function
-        guard let _ = self.selectedImage else { return }
+        guard let safeSelectedImage = self.selectedImage else { return }
         
         //if image is there, push UploadPostController to navigation controller
-        let controller = UploadPostController(image: self.selectedImage!)
+        let controller = UploadPostController(image: safeSelectedImage)
         navigationController?.pushViewController(controller, animated: true)
     }
     
@@ -87,9 +87,7 @@ class SelectImageViewController: UICollectionViewController {
                     
                     //set first image as selected image
                     if self.selectedImageThumbnail == nil {
-                        
                         self.selectedImageThumbnail = image
-                        
                     }
                     
                     //reload collection view once count has completed
