@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class UploadPostController: UIViewController {
 
@@ -44,6 +45,8 @@ class UploadPostController: UIViewController {
         button.backgroundColor = UIColor.blueTint
         button.setTitle("Post", for: .normal)
         button.layer.cornerRadius = 5
+        
+        button.addTarget(self, action: #selector(handleUploadPost), for: .touchUpInside)
         return button
     }()
     
@@ -65,7 +68,20 @@ class UploadPostController: UIViewController {
     }
     
     //MARK: - Selectors
-    
+    @objc func handleUploadPost() {
+        let caption = captionTextView.text ?? ""
+        
+        Service.shared.uploadPost(postImage, caption: caption) { (status) in
+            if status {
+                print("DEBUG: POST UPLOAD SUCCESSFULL!")
+                self.dismiss(animated: true) {
+                    self.tabBarController?.selectedIndex = 0
+                }
+            }else{
+                print("DEBUG: POST UPLOAD FAILED!")
+            }
+        }
+    }
     
     //MARK: - Helper Functions
     func configureUI() {

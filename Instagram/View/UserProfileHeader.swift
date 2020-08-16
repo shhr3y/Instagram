@@ -47,7 +47,7 @@ class UserProfileHeader: UICollectionViewCell {
         return label
     }()
     
-    private lazy var postsLabel: UILabel = {
+    lazy var postsLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.numberOfLines = 0

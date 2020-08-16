@@ -16,6 +16,7 @@ class UserProfileController: UICollectionViewController {
 
     //MARK: - Properties
     var user: User?
+    var posts = [Post]()
     
     
     //MARK: - Lifecycle
@@ -25,13 +26,18 @@ class UserProfileController: UICollectionViewController {
         
         self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
-        //header
+        //register header
         self.collectionView!.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerIdentifier)
         
+        //configure controller elements
         configureUI()
         
+        //logic for current user profile or any other random user profile
         if user == nil {
             fetchCurrentUserData()
+        }else{
+            //fetch user profile
+            fetchPosts()
         }
     }
     
@@ -47,6 +53,15 @@ class UserProfileController: UICollectionViewController {
             self.navigationItem.title = user.username
             self.user = user
             self.collectionView.reloadData()
+            
+            self.fetchPosts()
+        }
+    }
+    
+    func fetchPosts() {
+        guard let user = self.user else { return }
+        Service.shared.fetchPost(for: user) { (post) in
+            self.posts.append(post)
         }
     }
     
@@ -141,6 +156,12 @@ extension UserProfileController: UserProfileHeaderDelegate {
         Service.shared.getUserStats(for: user.uid) { (stats) in
             guard let following = stats["noOfFollowing"] else { return }
             guard let followers = stats["noOfFollowers"] else { return }
+            guard let noOfPosts = stats["noOfPosts"] else { return }
+            
+            
+            let attributedPostsText = NSMutableAttributedString(string: "\(noOfPosts)\n", attributes: [NSMutableAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16)])
+            attributedPostsText.append(NSAttributedString(string: "Posts", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.black]))
+            header.postsLabel.attributedText = attributedPostsText
             
             let attributedFollowingText = NSMutableAttributedString(string: "\(following)\n", attributes: [NSMutableAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16)])
             attributedFollowingText.append(NSAttributedString(string: "Following", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor: UIColor.black]))
