@@ -22,8 +22,8 @@ struct Service {
     func fetchUserData(forUID uid: String, completion: @escaping(User) -> Void){
         DB_REF_USERS.child(uid).observeSingleEvent(of: .value) { (snapshot) in
             guard let userDictionary = snapshot.value as? [String: Any] else { return }
-            
             let user = User(uid: snapshot.key, dictionary: userDictionary)
+            
             completion(user)
         }
     }
@@ -159,9 +159,18 @@ struct Service {
             DB_REF_POSTS.child(postId).observeSingleEvent(of: .value) { (snap) in
                 guard let dictionary = snap.value as? [String: Any] else { return}
                 
-                let post = Post(uid: postId, dictionary: dictionary)
+                let post = Post(postID: postId, dictionary: dictionary)
                 completion(post)
             }
+        }
+    }
+    
+    func fetchFeedPosts(completion: @escaping(Post) -> Void) {
+        DB_REF_POSTS.observe(.childAdded) { (snapshot) in
+            let postId = snapshot.key
+            guard let dictionary = snapshot.value as? [String: Any] else { return}
+            let post = Post(postID: postId, dictionary: dictionary)
+            completion(post)
         }
     }
 }

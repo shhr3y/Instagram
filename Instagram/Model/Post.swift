@@ -9,14 +9,16 @@
 import Foundation
 
 class Post {
+    var postID: String
     var caption: String
     var likes: Int
     var imageURL: String
     var ownerUID: String
     var creationDate: Date
     
-    init(uid: String, dictionary: [String: Any]) {
-        self.ownerUID = uid
+    init(postID: String, dictionary: [String: Any]) {
+        self.postID = postID
+        self.ownerUID = dictionary["ownerUID"] as? String ?? ""
 
         self.caption = dictionary["caption"] as? String ?? ""
         self.likes = dictionary["likes"] as? Int ?? 0

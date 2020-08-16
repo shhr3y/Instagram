@@ -21,36 +21,24 @@ class FeedController: UICollectionViewController {
     //MARK: - Properties
     var delegate: FeedControllerDelegate?
     
+    var posts = [Post]()
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configureLogOutButton()
+        //changing background color
+        collectionView.backgroundColor = .white
+        
         // Register cell classes
-        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-    }
-    // MARK: - UICollectionViewDataSource
+        self.collectionView!.register(FeedCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
-        return 0
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
-        return cell
+        //customizing navigation bar
+        configureNavigationBar()
+        
+        fetchPosts()
     }
     
-    //MARK: - Helper Functions
-    
-    func configureLogOutButton() {
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
-    }
+    //MARK: - Selectors
     
     @objc func handleLogout() {
         
@@ -72,4 +60,62 @@ class FeedController: UICollectionViewController {
         
         present(alert, animated: true, completion: nil)
     }
+    
+    @objc func handleDMTapped() {
+        print("DEBUG: HandleDMTapped")
+    }
+    //MARK: - Helper Functions
+    
+    func configureNavigationBar() {
+        //adding logout button
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
+        
+        //changing navigation bar title
+        self.navigationItem.title = "Feed"
+        
+        //adding messaging button
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "send2"), style: .plain, target: self, action: #selector(handleDMTapped))
+    }
+    
+    
+    //MARK: - API
+    
+    func fetchPosts(){
+        Service.shared.fetchFeedPosts { (post) in
+            self.posts.append(post)
+            
+            self.posts.sort { (post1, post2) -> Bool in
+                return post1.creationDate > post2.creationDate
+            } 
+            self.collectionView.reloadData()
+        }
+    }
+    
+    // MARK: - UICollectionViewDataSource
+
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        // #warning Incomplete implementation, return the number of sections
+        return 1
+    }
+
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        // #warning Incomplete implementation, return the number of items
+        return posts.count
+    }
+
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! FeedCell
+        cell.post = self.posts[indexPath.row]
+        return cell
+    }
 }
+
+//MARK: - Delegate UICollectionViewDelegateFlowLayout
+extension FeedController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = view.frame.width
+        let height = width + 8 + 40 + 8 + 50 + 60
+        return CGSize(width: width, height: height)
+    }
+}
+
