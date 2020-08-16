@@ -23,8 +23,8 @@ class SearchUserCell: UITableViewCell {
     }
 
     //MARK: - Properties
-    private let userProfileImageView: UIImageView = {
-        let iv = UIImageView()
+    private let userProfileImageView: CustomImageView = {
+        let iv = CustomImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
         iv.backgroundColor = .lightGray

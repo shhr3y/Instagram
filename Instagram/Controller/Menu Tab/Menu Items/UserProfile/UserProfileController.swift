@@ -12,6 +12,7 @@ import Firebase
 private let reuseIdentifier = "Cell"
 private let headerIdentifier = "UserProfileHeader"
 
+
 class UserProfileController: UICollectionViewController {
 
     //MARK: - Properties
@@ -24,7 +25,7 @@ class UserProfileController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        self.collectionView!.register(UserPostCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
         //register header
         self.collectionView!.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerIdentifier)
@@ -52,7 +53,6 @@ class UserProfileController: UICollectionViewController {
         Service.shared.fetchUserData(forUID: currentUser.uid) { (user) in
             self.navigationItem.title = user.username
             self.user = user
-            self.collectionView.reloadData()
             
             self.fetchPosts()
         }
@@ -62,6 +62,11 @@ class UserProfileController: UICollectionViewController {
         guard let user = self.user else { return }
         Service.shared.fetchPost(for: user) { (post) in
             self.posts.append(post)
+            
+            self.posts.sort { (post1, post2) -> Bool in
+                return post1.creationDate > post2.creationDate
+            }
+            self.collectionView.reloadData()
         }
     }
     
@@ -80,7 +85,7 @@ class UserProfileController: UICollectionViewController {
 
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 0
+        return posts.count
     }
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         //declare header
@@ -98,7 +103,8 @@ class UserProfileController: UICollectionViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! UserPostCell
+        cell.post = posts[indexPath.row]
         return cell
     }
 }
@@ -106,8 +112,22 @@ class UserProfileController: UICollectionViewController {
 //MARK: - Delegate UICollectionViewDelegateFlowLayout
 //setting height for the header
 extension UserProfileController: UICollectionViewDelegateFlowLayout{
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: view.frame.width, height: (view.frame.height - (view.frame.height * 0.755)))
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = (view.frame.width - 2)/3
+        return CGSize(width: width, height: width)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 1
     }
 }
 

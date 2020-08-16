@@ -10,6 +10,8 @@
 		355E650C24CE13A100ADDDDB /* FollowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 355E650B24CE13A100ADDDDB /* FollowController.swift */; };
 		355E650E24CE149400ADDDDB /* FollowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 355E650D24CE149400ADDDDB /* FollowCell.swift */; };
 		3576973624E582F700ED5084 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3576973524E582F700ED5084 /* Post.swift */; };
+		3576973824E8C2F200ED5084 /* UserPostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3576973724E8C2F200ED5084 /* UserPostCell.swift */; };
+		3576973A24E8CCA300ED5084 /* CustomImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3576973924E8CCA300ED5084 /* CustomImageView.swift */; };
 		357B173F24CA218A00CCF48A /* SearchUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 357B173E24CA218A00CCF48A /* SearchUserCell.swift */; };
 		357B174224CA36BC00CCF48A /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 357B174124CA36BC00CCF48A /* Service.swift */; };
 		359050BD24C876FC0093722D /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359050BC24C876FC0093722D /* MainTabBarController.swift */; };
@@ -39,6 +41,8 @@
 		355E650B24CE13A100ADDDDB /* FollowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowController.swift; sourceTree = "<group>"; };
 		355E650D24CE149400ADDDDB /* FollowCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowCell.swift; sourceTree = "<group>"; };
 		3576973524E582F700ED5084 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		3576973724E8C2F200ED5084 /* UserPostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPostCell.swift; sourceTree = "<group>"; };
+		3576973924E8CCA300ED5084 /* CustomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImageView.swift; sourceTree = "<group>"; };
 		357B173E24CA218A00CCF48A /* SearchUserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUserCell.swift; sourceTree = "<group>"; };
 		357B174124CA36BC00CCF48A /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		359050BC24C876FC0093722D /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
@@ -210,6 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				35AAFB9224C9B68E0072CDB2 /* UserProfileHeader.swift */,
+				3576973724E8C2F200ED5084 /* UserPostCell.swift */,
 				357B173E24CA218A00CCF48A /* SearchUserCell.swift */,
 				355E650D24CE149400ADDDDB /* FollowCell.swift */,
 				35CC06F424E03811000224FC /* SelectPhotoCell.swift */,
@@ -231,6 +236,7 @@
 			isa = PBXGroup;
 			children = (
 				35E073E824C59C440000596C /* Extensions.swift */,
+				3576973924E8CCA300ED5084 /* CustomImageView.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -370,6 +376,7 @@
 			files = (
 				357B173F24CA218A00CCF48A /* SearchUserCell.swift in Sources */,
 				35CC06F724E0386F000224FC /* SelectPhotoHeader.swift in Sources */,
+				3576973A24E8CCA300ED5084 /* CustomImageView.swift in Sources */,
 				359050C524C89C9F0093722D /* NotificationController.swift in Sources */,
 				357B174224CA36BC00CCF48A /* Service.swift in Sources */,
 				35E073CF24C59A540000596C /* AppDelegate.swift in Sources */,
@@ -378,6 +385,7 @@
 				359050BD24C876FC0093722D /* MainTabBarController.swift in Sources */,
 				35CC06F524E03811000224FC /* SelectPhotoCell.swift in Sources */,
 				359050C124C89C4D0093722D /* SearchController.swift in Sources */,
+				3576973824E8C2F200ED5084 /* UserPostCell.swift in Sources */,
 				355E650C24CE13A100ADDDDB /* FollowController.swift in Sources */,
 				359050C724C89CD80093722D /* UserProfileController.swift in Sources */,
 				3576973624E582F700ED5084 /* Post.swift in Sources */,

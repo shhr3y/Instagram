@@ -49,8 +49,8 @@ class FollowCell: UITableViewCell {
         }
     }
     
-    lazy var userProfileImageView: UIImageView = {
-        let iv = UIImageView()
+    lazy var userProfileImageView: CustomImageView = {
+        let iv = CustomImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
         iv.backgroundColor = .lightGray
