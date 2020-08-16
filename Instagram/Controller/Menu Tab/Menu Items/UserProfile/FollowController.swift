@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Firebase
+
 
 private let resuseIdentifier = "FollowCell"
 
