@@ -17,7 +17,8 @@ class Post {
     var creationDate: Date
     var user: User?
     
-    init(postID: String, dictionary: [String: Any]) {
+    init(postID: String,user: User, dictionary: [String: Any]) {
+        self.user = user
         self.postID = postID
         self.ownerUID = dictionary["ownerUID"] as? String ?? ""
         
@@ -27,9 +28,5 @@ class Post {
         
         let creationDateRaw = dictionary["creationDate"] as? Double ?? 0
         self.creationDate = Date(timeIntervalSince1970: creationDateRaw)
-        
-        Service.shared.fetchUserData(forUID: ownerUID) { (user) in
-            self.user = user
-        }
     }
 }

@@ -38,7 +38,7 @@ class UserProfileController: UICollectionViewController {
             fetchCurrentUserData()
         }else{
             //fetch user profile
-            fetchPosts()
+            fetchAllUsersPosts()
         }
     }
     
@@ -54,13 +54,13 @@ class UserProfileController: UICollectionViewController {
             self.navigationItem.title = user.username
             self.user = user
             
-            self.fetchPosts()
+            self.fetchAllUsersPosts()
         }
     }
     
-    func fetchPosts() {
+    func fetchAllUsersPosts() {
         guard let user = self.user else { return }
-        Service.shared.fetchPost(for: user) { (post) in
+        Service.shared.fetchAllPosts(for: user) { (post) in
             self.posts.append(post)
             
             self.posts.sort { (post1, post2) -> Bool in

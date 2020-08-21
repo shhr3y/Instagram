@@ -151,15 +151,25 @@ struct Service {
         }
     }
     
-    func fetchPost(for user: User, completion: @escaping(Post)-> Void) {
+    func fetchPost(for postID: String, completion: @escaping(Post) -> Void) {
+        
+        DB_REF_POSTS.child(postID).observeSingleEvent(of: .value) { (snap) in
+            guard let dictionary = snap.value as? [String: Any] else { return}
+            
+            guard let ownerUID = dictionary["ownerUID"] as? String else { return }
+            self.fetchUserData(forUID: ownerUID) { (user) in
+                let post = Post(postID: postID, user: user, dictionary: dictionary)
+                completion(post)
+            }
+        }
+    }
+    
+    func fetchAllPosts(for user: User, completion: @escaping(Post)-> Void) {
+        
         DB_REF_USER_POSTS.child(user.uid).observe(.childAdded) { (snapshot) in
             let postId = snapshot.key
              
-            DB_REF_POSTS.child(postId).observeSingleEvent(of: .value) { (snap) in
-                guard let dictionary = snap.value as? [String: Any] else { return}
-                
-                let post = Post(postID: postId, dictionary: dictionary)
-                
+            self.fetchPost(for: postId) { (post) in
                 completion(post)
             }
         }
@@ -168,9 +178,10 @@ struct Service {
     func fetchFeedPosts(completion: @escaping(Post) -> Void) {
         DB_REF_POSTS.observe(.childAdded) { (snapshot) in
             let postId = snapshot.key
-            guard let dictionary = snapshot.value as? [String: Any] else { return}
-            let post = Post(postID: postId, dictionary: dictionary)
-            completion(post)
+            
+            self.fetchPost(for: postId) { (post) in
+                completion(post)
+            }
         }
     }
 }
