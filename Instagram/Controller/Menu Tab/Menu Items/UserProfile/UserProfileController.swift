@@ -107,6 +107,14 @@ class UserProfileController: UICollectionViewController {
         cell.post = posts[indexPath.row]
         return cell
     }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let post = posts[indexPath.row]
+        let controller = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
+        controller.viewSinglePost = true
+        controller.post = post
+        navigationController?.pushViewController(controller, animated: true)
+    }
 }
 
 //MARK: - Delegate UICollectionViewDelegateFlowLayout

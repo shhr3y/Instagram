@@ -15,9 +15,15 @@ let DB_REF_USER_FOLLOWING = DB_REF.child("user-following")
 let DB_REF_USER_FOLLOWER = DB_REF.child("user-follower")
 let DB_REF_POSTS = DB_REF.child("posts")
 let DB_REF_USER_POSTS = DB_REF.child("user-posts")
+let DB_REF_USER_FEED = DB_REF.child("user-feed")
 
 struct Service {
     static let shared = Service()
+    
+    func getCurrentUser() -> FirebaseAuth.User? {
+        guard let user = Auth.auth().currentUser else { return nil}
+        return user
+    }
     
     func fetchUserData(forUID uid: String, completion: @escaping(User) -> Void){
         DB_REF_USERS.child(uid).observeSingleEvent(of: .value) { (snapshot) in
@@ -57,11 +63,21 @@ struct Service {
     func followUser(currentUserUID: String, userUID: String) {
         DB_REF_USER_FOLLOWING.child(currentUserUID).updateChildValues([userUID: 1])
         DB_REF_USER_FOLLOWER.child(userUID).updateChildValues([currentUserUID: 1])
+        
+        DB_REF_USER_POSTS.child(userUID).observe(.childAdded) { (snapshot) in
+            let postID = snapshot.key
+            self.addToUserFeed(postID: postID)
+        }
     }
     
     func unFollowUser(currentUserUID: String, userUID: String) {
         DB_REF_USER_FOLLOWING.child(currentUserUID).child(userUID).removeValue()
         DB_REF_USER_FOLLOWER.child(userUID).child(currentUserUID).removeValue()
+        
+        DB_REF_USER_POSTS.child(userUID).observe(.childAdded) { (snapshot) in
+            let postID = snapshot.key
+            self.removeFromUserFeed(postID: postID)
+        }
     }
     
     func checkIfUserIsFollowing(currentUserUID: String, userUID: String, completion: @escaping(Bool) -> Void) {
@@ -139,32 +155,76 @@ struct Service {
                         return
                     }
                     guard let key = postId.key else { return }
-                    DB_REF_USER_POSTS.child(userUID).updateChildValues([key: 1]) { (error, reference) in
-                        if let error = error {
-                            print("DEBUG: Error while adding post to user-posts: \(error.localizedDescription)")
-                            return
-                        }
-                        completion(true)
-                    }
+                    DB_REF_USER_POSTS.child(userUID).updateChildValues([key: 1])
+                    self.updateUserFeed(withPostID: key)
+                    completion(true)
                 }
             })
         }
     }
     
-    func fetchPost(for postID: String, completion: @escaping(Post) -> Void) {
+    
+    func updateUserFeed(withPostID postID: String) {                                     // ADD UPLOADED POST TO USERS FEED
+        guard let currentUser = Auth.auth().currentUser else { return }
         
-        DB_REF_POSTS.child(postID).observeSingleEvent(of: .value) { (snap) in
-            guard let dictionary = snap.value as? [String: Any] else { return}
+        // database values
+        let values = [postID: 1]
+        
+        // update followers feed
+        DB_REF_USER_FOLLOWER.child(currentUser.uid).observe(.childAdded) { (snapshot) in
+            let followerUID = snapshot.key
+            DB_REF_USER_FEED.child(followerUID).updateChildValues(values)
+        }
+        
+        //update current user feed
+        DB_REF_USER_FEED.child(currentUser.uid).updateChildValues(values)
+    }
+    
+    func addToUserFeed(postID: String) {                                                // ADDS POST ID TO USER FEED
+        guard let currentUser = Auth.auth().currentUser else { return }
+        
+        DB_REF_USER_FEED.child(currentUser.uid).updateChildValues([postID: 1])
+    }
+    
+    func removeFromUserFeed(postID: String) {                                           // REMOVES POST ID FROM USER FEED
+        guard let currentUser = Auth.auth().currentUser else { return }
+        
+        DB_REF_USER_FEED.child(currentUser.uid).child(postID).removeValue()
+    }
+    
+    func updateUserFeedForFollowingUser() {                                             // AUTOMATICALLY FETCHES ALL POSTS FOR LOGGED USER
+        guard let currentUser = Auth.auth().currentUser else { return }
+        
+        // ADD FOLLOWING USERS POST TO FEED
+        DB_REF_USER_FOLLOWING.child(currentUser.uid).observe(.childAdded) { (snapshot) in
+            let followingUserUID = snapshot.key
             
-            guard let ownerUID = dictionary["ownerUID"] as? String else { return }
-            self.fetchUserData(forUID: ownerUID) { (user) in
-                let post = Post(postID: postID, user: user, dictionary: dictionary)
+            DB_REF_USER_POSTS.child(followingUserUID).observe(.childAdded) { (snapshot) in
+                let postID = snapshot.key
+                self.addToUserFeed(postID: postID)
+            }
+        }
+        
+        // ADD LOGGED USER POSTS TO FEED
+        DB_REF_USER_POSTS.child(currentUser.uid).observe(.childAdded) { (snapshot) in
+            let postID = snapshot.key
+            self.addToUserFeed(postID: postID)
+        }
+    }
+    
+    func fetchFeedPosts(completion: @escaping(Post) -> Void) {                             // FETCHES ALL POSTS IN FEED
+        guard let currentUser = Auth.auth().currentUser else { return }
+        
+        DB_REF_USER_FEED.child(currentUser.uid).observe(.childAdded) { (snapshot) in
+            let postId = snapshot.key
+            
+            self.fetchPost(for: postId) { (post) in
                 completion(post)
             }
         }
     }
     
-    func fetchAllPosts(for user: User, completion: @escaping(Post)-> Void) {
+    func fetchAllPosts(for user: User, completion: @escaping(Post)-> Void) {               // FETCHES ALL POSTS FOR A PARTICULAR USER
         
         DB_REF_USER_POSTS.child(user.uid).observe(.childAdded) { (snapshot) in
             let postId = snapshot.key
@@ -175,11 +235,14 @@ struct Service {
         }
     }
     
-    func fetchFeedPosts(completion: @escaping(Post) -> Void) {
-        DB_REF_POSTS.observe(.childAdded) { (snapshot) in
-            let postId = snapshot.key
+    func fetchPost(for postID: String, completion: @escaping(Post) -> Void) {             // FETCHES SINGLE POST INFO
+        
+        DB_REF_POSTS.child(postID).observeSingleEvent(of: .value) { (snap) in
+            guard let dictionary = snap.value as? [String: Any] else { return}
             
-            self.fetchPost(for: postId) { (post) in
+            guard let ownerUID = dictionary["ownerUID"] as? String else { return }
+            self.fetchUserData(forUID: ownerUID) { (user) in
+                let post = Post(postID: postID, user: user, dictionary: dictionary)
                 completion(post)
             }
         }

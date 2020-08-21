@@ -97,8 +97,5 @@ class UploadPostController: UIViewController {
         
         view.addSubview(shareButton)
         shareButton.anchor(top: captionTextView.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor,paddingTop: 6, paddingLeft: 15, paddingRight: 15, height: 50)
-        
-        
     }
-    
 }

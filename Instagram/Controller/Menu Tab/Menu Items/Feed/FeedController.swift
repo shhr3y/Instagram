@@ -18,6 +18,8 @@ protocol FeedControllerDelegate: class {
 class FeedController: UICollectionViewController {
     //MARK: - Properties
     var delegate: FeedControllerDelegate?
+    var viewSinglePost = false
+    var post: Post?
     
     var posts = [Post]()
     //MARK: - Lifecycle
@@ -33,9 +35,11 @@ class FeedController: UICollectionViewController {
         //customizing navigation bar
         configureNavigationBar()
         
-        fetchPosts()
+        if !viewSinglePost {
+            setFeedPosts()
+        }
     }
-    
+   
     //MARK: - Selectors
     
     @objc func handleLogout() {
@@ -65,20 +69,32 @@ class FeedController: UICollectionViewController {
     //MARK: - Helper Functions
     
     func configureNavigationBar() {
-        //adding logout button
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
-        
-        //changing navigation bar title
-        self.navigationItem.title = "Feed"
-        
-        //adding messaging button
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "send2"), style: .plain, target: self, action: #selector(handleDMTapped))
+        if viewSinglePost {
+            //configuration for SinglePost
+            //changing navigation bar title
+            self.navigationItem.title = "Post"
+        }else{
+            //configuration for Feed
+            //changing navigation bar title
+            self.navigationItem.title = "Feed"
+            //adding logout button
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
+            //adding messaging button
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "send2"), style: .plain, target: self, action: #selector(handleDMTapped))
+        }
     }
     
     
     //MARK: - API
+    func setFeedPosts() {
+        Service.shared.updateUserFeedAutomatically()
+        fetchPosts()
+        self.collectionView.reloadData()
+    }
+    
     
     func fetchPosts(){
+        print("DEBUG:- FetchPost called")
         Service.shared.fetchFeedPosts { (post) in
             self.posts.append(post)
             
@@ -98,13 +114,23 @@ class FeedController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
+        if viewSinglePost {
+            return 1
+        }
         return posts.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! FeedCell
         cell.delegate = self
-        cell.post = self.posts[indexPath.row]
+        
+        if viewSinglePost {
+            if let post = self.post {            
+                cell.post = post
+            }
+        }else{
+            cell.post = self.posts[indexPath.row]
+        }
         return cell
     }
 }
@@ -140,6 +166,4 @@ extension FeedController: FeedCellDelegate {
     func handleCommentTapped(for cell: FeedCell) {
         print("DEBUG:- whathandleCommentTapped for cell: \(cell)")
     }
-    
-    
 }
