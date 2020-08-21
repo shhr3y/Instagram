@@ -16,8 +16,6 @@ protocol FeedControllerDelegate: class {
 }
 
 class FeedController: UICollectionViewController {
-
-    
     //MARK: - Properties
     var delegate: FeedControllerDelegate?
     
@@ -105,6 +103,7 @@ class FeedController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! FeedCell
+        cell.delegate = self
         cell.post = self.posts[indexPath.row]
         return cell
     }
@@ -119,3 +118,28 @@ extension FeedController: UICollectionViewDelegateFlowLayout {
     }
 }
 
+//MARK: - Delegate FeedCellDelegate
+
+extension FeedController: FeedCellDelegate {
+    func handleUsernameTapped(for cell: FeedCell) {
+        guard let post = cell.post else { return }
+        
+        let controller = UserProfileController(collectionViewLayout: UICollectionViewFlowLayout())
+        controller.user = post.user
+        self.navigationController?.pushViewController(controller, animated: true)
+    }
+    
+    func handleOptionsTapped(for cell: FeedCell) {
+        print("DEBUG:- handleOptionsTapped for cell: \(cell)")
+    }
+    
+    func handleLikeTapped(for cell: FeedCell) {
+        print("DEBUG:- whathandleLikeTapped for cell: \(cell)")
+    }
+    
+    func handleCommentTapped(for cell: FeedCell) {
+        print("DEBUG:- whathandleCommentTapped for cell: \(cell)")
+    }
+    
+    
+}

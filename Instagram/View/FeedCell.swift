@@ -7,9 +7,18 @@
 //
 
 import UIKit
+ 
+ protocol FeedCellDelegate: class {
+    func handleUsernameTapped(for cell: FeedCell)
+    func handleOptionsTapped(for cell: FeedCell)
+    func handleLikeTapped(for cell: FeedCell)
+    func handleCommentTapped(for cell: FeedCell)
+ }
 
 class FeedCell: UICollectionViewCell {
     //MARK: - Properties
+    var delegate: FeedCellDelegate?
+    
     var post: Post? {
         didSet{
             guard let post = post else { return }
@@ -30,6 +39,10 @@ class FeedCell: UICollectionViewCell {
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
         iv.backgroundColor = .lightGray
+
+        iv.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleUsernameTapped))
+        iv.addGestureRecognizer(tap)
         return iv
     }()
     
@@ -38,14 +51,18 @@ class FeedCell: UICollectionViewCell {
         button.setTitle("username", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         button.setTitleColor(.black, for: .normal)
+        
+        button.addTarget(self, action: #selector(handleUsernameTapped), for: .touchUpInside)
         return button
     }()
     
-    private let optionButton: UIButton = {
+    private lazy var optionButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "menu_options"), for: .normal)
         button.tintColor = .black
         button.setDimensions(height: 5, width: 18)
+        
+        button.addTarget(self, action: #selector(handleOptionTapped), for: .touchUpInside)
         return button
     }()
     
@@ -57,17 +74,21 @@ class FeedCell: UICollectionViewCell {
         return iv
     }()
     
-    private let likeButton: UIButton = {
+    private lazy var likeButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "like_unselected"), for: .normal)
         button.tintColor = .black
+        
+        button.addTarget(self, action: #selector(handleLikeTapped), for: .touchUpInside)
         return button
     }()
     
-    private let commentButton: UIButton = {
+    private lazy var commentButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "comment"), for: .normal)
         button.tintColor = .black
+        
+        button.addTarget(self, action: #selector(handleCommentTapped), for: .touchUpInside)
         return button
     }()
     
@@ -104,7 +125,7 @@ class FeedCell: UICollectionViewCell {
         return label
     }()
     
-    private let postTimeLabel: UILabel = {
+    private lazy var postTimeLabel: UILabel = {
         let label = UILabel()
         label.textColor = .lightGray
         label.font = UIFont.systemFont(ofSize: 11)
@@ -124,7 +145,25 @@ class FeedCell: UICollectionViewCell {
     }
     
     //MARK: - Selectors
+    @objc func handleUsernameTapped() {
+        print("DEBUG:- username")
+        delegate?.handleUsernameTapped(for: self)
+    }
     
+    @objc func handleOptionTapped() {
+        print("DEBUG:- option")
+        delegate?.handleOptionsTapped(for: self)
+    }
+    
+    @objc func handleLikeTapped() {
+        print("DEBUG:- like")
+        delegate?.handleLikeTapped(for: self)
+    }
+    
+    @objc func handleCommentTapped() {
+        print("DEBUG:- comment")
+        delegate?.handleCommentTapped(for: self)
+    }
     
     //MARK: - Helper Functions
     
@@ -179,6 +218,10 @@ class FeedCell: UICollectionViewCell {
         let attributedText = NSMutableAttributedString(string: "\(user.username)", attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 14)])
         attributedText.append(NSMutableAttributedString(string: " "))
         attributedText.append(NSMutableAttributedString(string: "\(post.caption)", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14)]))
+        
+        let date = post.creationDate
+        let dateText = timeAgoSince(date)
+        self.postTimeLabel.text = dateText.uppercased()
         
         captionLabel.attributedText = attributedText
         

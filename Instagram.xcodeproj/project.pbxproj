@@ -23,6 +23,7 @@
 		359050C724C89CD80093722D /* UserProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359050C624C89CD80093722D /* UserProfileController.swift */; };
 		35AAFB9324C9B68E0072CDB2 /* UserProfileHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35AAFB9224C9B68E0072CDB2 /* UserProfileHeader.swift */; };
 		35AAFB9524C9D2270072CDB2 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35AAFB9424C9D2270072CDB2 /* User.swift */; };
+		35C1542124EFE72800EF98F6 /* TimeAgo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C1542024EFE72800EF98F6 /* TimeAgo.swift */; };
 		35CC06F324E03659000224FC /* SelectImageViewContrioller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35CC06F224E03659000224FC /* SelectImageViewContrioller.swift */; };
 		35CC06F524E03811000224FC /* SelectPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35CC06F424E03811000224FC /* SelectPhotoCell.swift */; };
 		35CC06F724E0386F000224FC /* SelectPhotoHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35CC06F624E0386F000224FC /* SelectPhotoHeader.swift */; };
@@ -55,6 +56,7 @@
 		359050C624C89CD80093722D /* UserProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileController.swift; sourceTree = "<group>"; };
 		35AAFB9224C9B68E0072CDB2 /* UserProfileHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileHeader.swift; sourceTree = "<group>"; };
 		35AAFB9424C9D2270072CDB2 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		35C1542024EFE72800EF98F6 /* TimeAgo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeAgo.swift; sourceTree = "<group>"; };
 		35CC06F224E03659000224FC /* SelectImageViewContrioller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectImageViewContrioller.swift; sourceTree = "<group>"; };
 		35CC06F424E03811000224FC /* SelectPhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPhotoCell.swift; sourceTree = "<group>"; };
 		35CC06F624E0386F000224FC /* SelectPhotoHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPhotoHeader.swift; sourceTree = "<group>"; };
@@ -240,6 +242,7 @@
 			children = (
 				35E073E824C59C440000596C /* Extensions.swift */,
 				3576973924E8CCA300ED5084 /* CustomImageView.swift */,
+				35C1542024EFE72800EF98F6 /* TimeAgo.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -383,6 +386,7 @@
 				359050C524C89C9F0093722D /* NotificationController.swift in Sources */,
 				357B174224CA36BC00CCF48A /* Service.swift in Sources */,
 				351C4B7524E94DB4000C2443 /* FeedCell.swift in Sources */,
+				35C1542124EFE72800EF98F6 /* TimeAgo.swift in Sources */,
 				35E073CF24C59A540000596C /* AppDelegate.swift in Sources */,
 				35E073E624C59B0A0000596C /* LoginController.swift in Sources */,
 				35AAFB9324C9B68E0072CDB2 /* UserProfileHeader.swift in Sources */,

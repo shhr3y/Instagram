@@ -144,7 +144,6 @@ struct Service {
                             print("DEBUG: Error while adding post to user-posts: \(error.localizedDescription)")
                             return
                         }
-                        print("DEBUG: added to user-posts")
                         completion(true)
                     }
                 }
@@ -160,6 +159,7 @@ struct Service {
                 guard let dictionary = snap.value as? [String: Any] else { return}
                 
                 let post = Post(postID: postId, dictionary: dictionary)
+                
                 completion(post)
             }
         }

@@ -15,16 +15,21 @@ class Post {
     var imageURL: String
     var ownerUID: String
     var creationDate: Date
+    var user: User?
     
     init(postID: String, dictionary: [String: Any]) {
         self.postID = postID
         self.ownerUID = dictionary["ownerUID"] as? String ?? ""
-
+        
         self.caption = dictionary["caption"] as? String ?? ""
         self.likes = dictionary["likes"] as? Int ?? 0
         self.imageURL = dictionary["postImageURL"] as? String ?? ""
         
         let creationDateRaw = dictionary["creationDate"] as? Double ?? 0
         self.creationDate = Date(timeIntervalSince1970: creationDateRaw)
+        
+        Service.shared.fetchUserData(forUID: ownerUID) { (user) in
+            self.user = user
+        }
     }
 }
