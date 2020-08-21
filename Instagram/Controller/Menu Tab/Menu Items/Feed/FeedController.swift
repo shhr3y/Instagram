@@ -16,13 +16,17 @@ protocol FeedControllerDelegate: class {
 }
 
 class FeedController: UICollectionViewController {
+    
     //MARK: - Properties
+    
     var delegate: FeedControllerDelegate?
     var viewSinglePost = false
     var post: Post?
     
     var posts = [Post]()
+    
     //MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -32,9 +36,15 @@ class FeedController: UICollectionViewController {
         // Register cell classes
         self.collectionView!.register(FeedCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
+        //add refresh control
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView.refreshControl = refreshControl
+        
         //customizing navigation bar
         configureNavigationBar()
         
+        // setFeeds only if it not in singleViewPostMode
         if !viewSinglePost {
             setFeedPosts()
         }
@@ -66,6 +76,12 @@ class FeedController: UICollectionViewController {
     @objc func handleDMTapped() {
         print("DEBUG: HandleDMTapped")
     }
+    
+    @objc func handleRefresh() {
+        posts.removeAll(keepingCapacity: false)
+        
+        viewDidLoad()
+    }
     //MARK: - Helper Functions
     
     func configureNavigationBar() {
@@ -87,7 +103,7 @@ class FeedController: UICollectionViewController {
     
     //MARK: - API
     func setFeedPosts() {
-        Service.shared.updateUserFeedAutomatically()
+        Service.shared.updateUserFeedForFollowingUser()
         fetchPosts()
         self.collectionView.reloadData()
     }
@@ -96,12 +112,14 @@ class FeedController: UICollectionViewController {
     func fetchPosts(){
         print("DEBUG:- FetchPost called")
         Service.shared.fetchFeedPosts { (post) in
+            self.collectionView.reloadData()
             self.posts.append(post)
             
             self.posts.sort { (post1, post2) -> Bool in
                 return post1.creationDate > post2.creationDate
-            } 
+            }
             self.collectionView.reloadData()
+            self.collectionView.refreshControl?.endRefreshing()
         }
     }
     

@@ -182,13 +182,11 @@ struct Service {
     
     func addToUserFeed(postID: String) {                                                // ADDS POST ID TO USER FEED
         guard let currentUser = Auth.auth().currentUser else { return }
-        
         DB_REF_USER_FEED.child(currentUser.uid).updateChildValues([postID: 1])
     }
     
     func removeFromUserFeed(postID: String) {                                           // REMOVES POST ID FROM USER FEED
         guard let currentUser = Auth.auth().currentUser else { return }
-        
         DB_REF_USER_FEED.child(currentUser.uid).child(postID).removeValue()
     }
     
