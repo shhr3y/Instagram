@@ -149,6 +149,7 @@ class FeedController: UICollectionViewController {
         }else{
             cell.post = self.posts[indexPath.row]
         }
+        
         return cell
     }
 }
@@ -180,7 +181,16 @@ extension FeedController: FeedCellDelegate {
     func handleLikeTapped(for cell: FeedCell) {
         guard let post = cell.post else { return }
         
+        if post.isLiked {
+            cell.likeButton.setImage(#imageLiteral(resourceName: "like_unselected").withRenderingMode(.alwaysOriginal), for: .normal)
+            post.likes = post.likes - 1
+        } else {
+            cell.likeButton.setImage(#imageLiteral(resourceName: "like_selected").withRenderingMode(.alwaysOriginal), for: .normal)
+            post.likes = post.likes + 1
+        }
+        cell.likeLabel.text = "\(post.likes) likes"
         Service.shared.updateLikeStatus(for: post)
+        post.isLiked.toggle()
     }
     
     func handleCommentTapped(for cell: FeedCell) {

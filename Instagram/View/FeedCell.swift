@@ -74,9 +74,9 @@ class FeedCell: UICollectionViewCell {
         return iv
     }()
     
-    private lazy var likeButton: UIButton = {
+    lazy var likeButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(#imageLiteral(resourceName: "like_unselected"), for: .normal)
+        button.setImage(#imageLiteral(resourceName: "like_unselected").withRenderingMode(.alwaysOriginal), for: .normal)
         button.tintColor = .black
         
         button.addTarget(self, action: #selector(handleLikeTapped), for: .touchUpInside)
@@ -106,7 +106,7 @@ class FeedCell: UICollectionViewCell {
         return button
     }()
     
-    private let likeLabel: UILabel = {
+    lazy var likeLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 14)
         label.text = "3 likes"
@@ -211,16 +211,26 @@ class FeedCell: UICollectionViewCell {
     }
     
     func configurePostForCaptionAndLikes(forPost post: Post, user: User) {
+        // SETTING CAPTION TEXT
         let attributedText = NSMutableAttributedString(string: "\(user.username)", attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 14)])
         attributedText.append(NSMutableAttributedString(string: " "))
         attributedText.append(NSMutableAttributedString(string: "\(post.caption)", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14)]))
         
-        let date = post.creationDate
-        let dateText = timeAgoSince(date)
-        self.postTimeLabel.text = dateText.uppercased()
-        
         captionLabel.attributedText = attributedText
+    
+        //SETTING TIME AGO LABEL
+        let date = post.creationDate
+        let dateText = date.timeAgo().uppercased()
+        self.postTimeLabel.text = dateText
         
+        
+        // SETTING LIKE BUTTON IMAGE
+        likeButton.setImage(#imageLiteral(resourceName: "like_unselected").withRenderingMode(.alwaysOriginal), for: .normal)
+        if post.isLiked {
+            likeButton.setImage(#imageLiteral(resourceName: "like_selected").withRenderingMode(.alwaysOriginal), for: .normal)
+        }
+        
+        // SETTING LIKES LABEL TEXT
         likeLabel.text = "\(post.likes) likes"
     }
 }
