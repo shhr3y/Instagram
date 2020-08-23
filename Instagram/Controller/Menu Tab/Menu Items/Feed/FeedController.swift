@@ -166,6 +166,12 @@ extension FeedController: UICollectionViewDelegateFlowLayout {
 //MARK: - Delegate FeedCellDelegate
 
 extension FeedController: FeedCellDelegate {
+    func handleViewLikesTapped(for cell: FeedCell) {
+        guard let post = cell.post else { return }
+        let likeController = LikesController(post: post)
+        self.navigationController?.pushViewController(likeController, animated: true)
+    }
+    
     func handleUsernameTapped(for cell: FeedCell) {
         guard let post = cell.post else { return }
         

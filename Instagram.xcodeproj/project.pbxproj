@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		351C4B7524E94DB4000C2443 /* FeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351C4B7424E94DB4000C2443 /* FeedCell.swift */; };
+		354F393624F29F4600B0D83F /* LikesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354F393524F29F4600B0D83F /* LikesController.swift */; };
 		355E650C24CE13A100ADDDDB /* FollowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 355E650B24CE13A100ADDDDB /* FollowController.swift */; };
 		355E650E24CE149400ADDDDB /* FollowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 355E650D24CE149400ADDDDB /* FollowCell.swift */; };
 		3576973624E582F700ED5084 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3576973524E582F700ED5084 /* Post.swift */; };
@@ -41,6 +42,7 @@
 
 /* Begin PBXFileReference section */
 		351C4B7424E94DB4000C2443 /* FeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
+		354F393524F29F4600B0D83F /* LikesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikesController.swift; sourceTree = "<group>"; };
 		355E650B24CE13A100ADDDDB /* FollowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowController.swift; sourceTree = "<group>"; };
 		355E650D24CE149400ADDDDB /* FollowCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowCell.swift; sourceTree = "<group>"; };
 		3576973524E582F700ED5084 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				359050BE24C87F0D0093722D /* FeedController.swift */,
+				354F393524F29F4600B0D83F /* LikesController.swift */,
 			);
 			path = Feed;
 			sourceTree = "<group>";
@@ -394,6 +397,7 @@
 				35CC06F524E03811000224FC /* SelectPhotoCell.swift in Sources */,
 				359050C124C89C4D0093722D /* SearchController.swift in Sources */,
 				3576973824E8C2F200ED5084 /* UserPostCell.swift in Sources */,
+				354F393624F29F4600B0D83F /* LikesController.swift in Sources */,
 				355E650C24CE13A100ADDDDB /* FollowController.swift in Sources */,
 				359050C724C89CD80093722D /* UserProfileController.swift in Sources */,
 				3576973624E582F700ED5084 /* Post.swift in Sources */,

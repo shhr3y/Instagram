@@ -252,7 +252,7 @@ struct Service {
     }
     
     
-    func updateLikeStatus(for post: Post) {
+    func updateLikeStatus(for post: Post) {                                                 // UPDATE LIKE STATUS (LIKE OR DISLIKE)
         guard let currentUser = Auth.auth().currentUser else { return }
         
         checkLikeStatus(for: post) { (status) in
@@ -267,10 +267,17 @@ struct Service {
         }
     }
     
-    func checkLikeStatus(for post: Post, completion: @escaping(Bool) -> Void){
+    func checkLikeStatus(for post: Post, completion: @escaping(Bool) -> Void){              // CHECK LIKE STATUS (LIKE OR DISLIKE)
         guard let currentUser = Auth.auth().currentUser else { return }
         DB_REF_USER_LIKES.child(currentUser.uid).child(post.postID).observeSingleEvent(of: .value) { (snapshot) in
             completion(snapshot.exists())
+        }
+    }
+    
+    func fetchLikedUsers(for post: Post, completion: @escaping([String: Any]) -> Void){     // FETCH UIDS OF ALL USERS WHO HAVE LIKED THE POST
+        DB_REF_POSTS.child(post.postID).child("likes").observeSingleEvent(of: .value) { (snapshot) in
+            guard let snapshot = snapshot.value as? [String: Any] else { return }
+            completion(snapshot)
         }
     }
 }

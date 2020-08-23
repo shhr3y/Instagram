@@ -13,6 +13,7 @@ import UIKit
     func handleOptionsTapped(for cell: FeedCell)
     func handleLikeTapped(for cell: FeedCell)
     func handleCommentTapped(for cell: FeedCell)
+    func handleViewLikesTapped(for cell: FeedCell)
  }
 
 class FeedCell: UICollectionViewCell {
@@ -110,6 +111,10 @@ class FeedCell: UICollectionViewCell {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 14)
         label.text = "3 likes"
+        label.isUserInteractionEnabled = true
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleViewLikesTapped))
+        label.addGestureRecognizer(tap)
         return label
     }()
     
@@ -159,6 +164,10 @@ class FeedCell: UICollectionViewCell {
     
     @objc func handleCommentTapped() {
         delegate?.handleCommentTapped(for: self)
+    }
+    
+    @objc func handleViewLikesTapped() {
+        delegate?.handleViewLikesTapped(for: self)
     }
     
     //MARK: - Helper Functions
