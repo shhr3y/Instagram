@@ -72,6 +72,12 @@ class FeedCell: UICollectionViewCell {
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
         iv.backgroundColor = .lightGray
+        
+        iv.isUserInteractionEnabled = true
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(handleLikeTapped))
+        doubleTap.numberOfTapsRequired = 2
+        iv.addGestureRecognizer(doubleTap)
+        
         return iv
     }()
     
