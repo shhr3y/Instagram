@@ -10,12 +10,17 @@ import Firebase
 
 //    MARK: - Database References
 let DB_REF = Database.database().reference()
+//profile
 let DB_REF_USERS = DB_REF.child("users")
 let DB_REF_USER_FOLLOWING = DB_REF.child("user-following")
 let DB_REF_USER_FOLLOWER = DB_REF.child("user-follower")
+//posts
 let DB_REF_POSTS = DB_REF.child("posts")
 let DB_REF_USER_POSTS = DB_REF.child("user-posts")
 let DB_REF_USER_FEED = DB_REF.child("user-feed")
+//likes
+let DB_REF_USER_LIKES = DB_REF.child("user-likes")
+
 
 struct Service {
     static let shared = Service()
@@ -243,6 +248,29 @@ struct Service {
                 let post = Post(postID: postID, user: user, dictionary: dictionary)
                 completion(post)
             }
+        }
+    }
+    
+    
+    func updateLikeStatus(for post: Post) {
+        guard let currentUser = Auth.auth().currentUser else { return }
+        
+        checkLikeStatus(for: post) { (status) in
+            if status {
+                DB_REF_POSTS.child(post.postID).child("likes").child(currentUser.uid).removeValue()
+                DB_REF_USER_LIKES.child(currentUser.uid).child(post.postID).removeValue()
+                
+            } else {
+                DB_REF_POSTS.child(post.postID).child("likes").updateChildValues([currentUser.uid : 1])
+                DB_REF_USER_LIKES.child(currentUser.uid).updateChildValues([post.postID: 1])
+            }
+        }
+    }
+    
+    func checkLikeStatus(for post: Post, completion: @escaping(Bool) -> Void){
+        guard let currentUser = Auth.auth().currentUser else { return }
+        DB_REF_USER_LIKES.child(currentUser.uid).child(post.postID).observeSingleEvent(of: .value) { (snapshot) in
+            completion(snapshot.exists())
         }
     }
 }

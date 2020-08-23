@@ -146,22 +146,18 @@ class FeedCell: UICollectionViewCell {
     
     //MARK: - Selectors
     @objc func handleUsernameTapped() {
-        print("DEBUG:- username")
         delegate?.handleUsernameTapped(for: self)
     }
     
     @objc func handleOptionTapped() {
-        print("DEBUG:- option")
         delegate?.handleOptionsTapped(for: self)
     }
     
     @objc func handleLikeTapped() {
-        print("DEBUG:- like")
         delegate?.handleLikeTapped(for: self)
     }
     
     @objc func handleCommentTapped() {
-        print("DEBUG:- comment")
         delegate?.handleCommentTapped(for: self)
     }
     

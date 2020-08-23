@@ -23,7 +23,8 @@ class Post {
         self.ownerUID = dictionary["ownerUID"] as? String ?? ""
         
         self.caption = dictionary["caption"] as? String ?? ""
-        self.likes = dictionary["likes"] as? Int ?? 0
+        let likesDictionary = dictionary["likes"] as? [String: Any]
+        self.likes = likesDictionary?.count ?? 0
         self.imageURL = dictionary["postImageURL"] as? String ?? ""
         
         let creationDateRaw = dictionary["creationDate"] as? Double ?? 0

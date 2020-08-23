@@ -178,10 +178,12 @@ extension FeedController: FeedCellDelegate {
     }
     
     func handleLikeTapped(for cell: FeedCell) {
-        print("DEBUG:- whathandleLikeTapped for cell: \(cell)")
+        guard let post = cell.post else { return }
+        
+        Service.shared.updateLikeStatus(for: post)
     }
     
     func handleCommentTapped(for cell: FeedCell) {
-        print("DEBUG:- whathandleCommentTapped for cell: \(cell)")
+        print("DEBUG:- handleCommentTapped for cell: \(cell)")
     }
 }
