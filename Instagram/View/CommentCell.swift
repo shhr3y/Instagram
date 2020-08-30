@@ -10,8 +10,19 @@ import UIKit
 
 class CommentCell: UICollectionViewCell {
     //MARK: - Properties
+    var comment: Comment? {
+        didSet {
+            guard let comment = comment else { return }
+            guard let user = comment.user else { return }
+            usernameLabel.setTitleColor(.black, for: .normal)
+            usernameLabel.setTitle(user.username, for: .normal)
+            userProfileImageView.loadImage(from: user.profileImageURL)
+            commentLabel.text = comment.comment
+            dateLabel.text = comment.creationDate.timeAgo()
+        }
+    }
     
-    private let userProfileImageView: CustomImageView = {
+    lazy var userProfileImageView: CustomImageView = {
         let iv = CustomImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
@@ -19,9 +30,8 @@ class CommentCell: UICollectionViewCell {
         return iv
     }()
     
-    private let usernameLabel: UIButton = {
+    lazy var usernameLabel: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("username", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         button.setTitleColor(.black, for: .normal)
         return button
@@ -30,11 +40,10 @@ class CommentCell: UICollectionViewCell {
     lazy var commentLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 15)
-        label.text = "this is test comment: "
         return label
     }()
     
-    private let dateLabel: UILabel = {
+    lazy var dateLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 13)
         label.textColor = .darkGray

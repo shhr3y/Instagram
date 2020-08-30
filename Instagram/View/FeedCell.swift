@@ -29,8 +29,6 @@ class FeedCell: UICollectionViewCell {
                 self.profileImageView.loadImage(from: user.profileImageURL)
                 self.configurePostForCaptionAndLikes(forPost: post, user: user)
                 self.postImageView.loadImage(from: post.imageURL)
-                
-                
             }
         }
     }

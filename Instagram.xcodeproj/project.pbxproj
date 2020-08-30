@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		351C4B7524E94DB4000C2443 /* FeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351C4B7424E94DB4000C2443 /* FeedCell.swift */; };
 		352D623824FBCEB900408BD6 /* CommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352D623724FBCEB900408BD6 /* CommentCell.swift */; };
+		352D623A24FBFB5C00408BD6 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352D623924FBFB5C00408BD6 /* Comment.swift */; };
 		354F393624F29F4600B0D83F /* LikesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354F393524F29F4600B0D83F /* LikesController.swift */; };
 		354F393824F2A92C00B0D83F /* CommentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354F393724F2A92C00B0D83F /* CommentController.swift */; };
 		355E650C24CE13A100ADDDDB /* FollowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 355E650B24CE13A100ADDDDB /* FollowController.swift */; };
@@ -45,6 +46,7 @@
 /* Begin PBXFileReference section */
 		351C4B7424E94DB4000C2443 /* FeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
 		352D623724FBCEB900408BD6 /* CommentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
+		352D623924FBFB5C00408BD6 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		354F393524F29F4600B0D83F /* LikesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikesController.swift; sourceTree = "<group>"; };
 		354F393724F2A92C00B0D83F /* CommentController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentController.swift; sourceTree = "<group>"; };
 		355E650B24CE13A100ADDDDB /* FollowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowController.swift; sourceTree = "<group>"; };
@@ -242,6 +244,7 @@
 			children = (
 				35AAFB9424C9D2270072CDB2 /* User.swift */,
 				3576973524E582F700ED5084 /* Post.swift */,
+				352D623924FBFB5C00408BD6 /* Comment.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -400,6 +403,7 @@
 				354F393824F2A92C00B0D83F /* CommentController.swift in Sources */,
 				35E073E624C59B0A0000596C /* LoginController.swift in Sources */,
 				35AAFB9324C9B68E0072CDB2 /* UserProfileHeader.swift in Sources */,
+				352D623A24FBFB5C00408BD6 /* Comment.swift in Sources */,
 				359050BD24C876FC0093722D /* MainTabBarController.swift in Sources */,
 				35CC06F524E03811000224FC /* SelectPhotoCell.swift in Sources */,
 				359050C124C89C4D0093722D /* SearchController.swift in Sources */,

@@ -13,6 +13,10 @@ private let resuseIdentitfier = "CommentCellIdentifier"
 class CommentController: UICollectionViewController {
     //MARK: - Properties
     
+    var allComments = [Comment]()
+    
+    var post: Post?
+    
     lazy var containerView: UIView = {
         let containerView = UIView()
         containerView.backgroundColor = .white
@@ -47,11 +51,14 @@ class CommentController: UICollectionViewController {
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize:  14)
         button.setDimensions(height: 50, width: 70)
+        
+        button.addTarget(self, action: #selector(handlePostTapped), for: .touchUpInside)
         return button
     }()
     
     
     //MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -59,11 +66,11 @@ class CommentController: UICollectionViewController {
         collectionView.register(CommentCell.self, forCellWithReuseIdentifier: resuseIdentitfier)
         
         configureUI()
+        fetchComments()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("DEBUG:- APPEAR CALLED")
         self.tabBarController?.tabBar.isHidden = true
     }
     
@@ -83,11 +90,32 @@ class CommentController: UICollectionViewController {
     }
     //MARK: - Selectors
     
+    @objc func handlePostTapped() {
+        guard let commentText = self.commentTextField.text else { return }
+        guard let post = self.post else { return }
+        if commentText != "" {
+            Service.shared.uploadComment(commentText, in: post) { (uploaded) in
+                if uploaded {
+//                    self.collectionView.reloadData()
+                    self.commentTextField.text = ""
+                }
+            }
+        }
+    }
+    
     //MARK: - Helper Functions
     
     func configureUI() {
         self.navigationItem.title = "Comments"
         self.collectionView.backgroundColor = .white
+    }
+    
+    func fetchComments() {
+        guard let post = self.post else { return }
+        Service.shared.fetchComments(for: post) { (comment) in
+            self.allComments.append(comment)
+            self.collectionView.reloadData()
+        }
     }
     
     //MARK: - UICollectionView
@@ -96,12 +124,12 @@ class CommentController: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 7
+        return allComments.count
     }
      
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: resuseIdentitfier, for: indexPath) as! CommentCell
-        cell.commentLabel.text = "this is test : \(indexPath.row)"
+        cell.comment = allComments[indexPath.row]
         return cell
     }
 

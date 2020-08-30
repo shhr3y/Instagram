@@ -20,6 +20,8 @@ let DB_REF_USER_POSTS = DB_REF.child("user-posts")
 let DB_REF_USER_FEED = DB_REF.child("user-feed")
 //likes
 let DB_REF_USER_LIKES = DB_REF.child("user-likes")
+//comment
+let DB_REF_COMMENTS = DB_REF.child("comments")
 
 
 struct Service {
@@ -278,6 +280,35 @@ struct Service {
         DB_REF_POSTS.child(post.postID).child("likes").observeSingleEvent(of: .value) { (snapshot) in
             guard let snapshot = snapshot.value as? [String: Any] else { return }
             completion(snapshot)
+        }
+    }
+    
+    func uploadComment(_ comment: String, in post: Post, completion: @escaping(Bool) -> Void) {
+        let trimmedComment = comment.trimmingCharacters(in: .whitespaces)
+        guard let currentUser = Auth.auth().currentUser else { return }
+        let creationDate = Int(NSDate().timeIntervalSince1970)
+        
+        let dictionary = ["comment": trimmedComment, "uid": currentUser.uid, "creationDate": creationDate] as [String: Any]
+        
+        DB_REF_COMMENTS.child(post.postID).childByAutoId().updateChildValues(dictionary) { (error, reference) in
+            if let _ = error {
+                completion(false)
+            }
+            else{
+                completion(true)
+            }
+        }
+    }
+    
+    func fetchComments(for post: Post, completion: @escaping(Comment) -> Void) {
+        DB_REF_COMMENTS.child(post.postID).observe(.childAdded) { (snapshot) in
+            guard let dict = snapshot.value as? [String: Any] else { return }
+            guard let uid = dict["uid"] as? String else { return }
+            
+            self.fetchUserData(forUID: uid) { (user) in
+                let comment = Comment(postID: post.postID, user: user, dictionary: dict)
+                completion(comment)
+            }
         }
     }
 }
