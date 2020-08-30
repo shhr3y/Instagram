@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		351C4B7524E94DB4000C2443 /* FeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 351C4B7424E94DB4000C2443 /* FeedCell.swift */; };
+		352D623824FBCEB900408BD6 /* CommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352D623724FBCEB900408BD6 /* CommentCell.swift */; };
 		354F393624F29F4600B0D83F /* LikesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354F393524F29F4600B0D83F /* LikesController.swift */; };
 		354F393824F2A92C00B0D83F /* CommentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354F393724F2A92C00B0D83F /* CommentController.swift */; };
 		355E650C24CE13A100ADDDDB /* FollowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 355E650B24CE13A100ADDDDB /* FollowController.swift */; };
@@ -43,6 +44,7 @@
 
 /* Begin PBXFileReference section */
 		351C4B7424E94DB4000C2443 /* FeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
+		352D623724FBCEB900408BD6 /* CommentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
 		354F393524F29F4600B0D83F /* LikesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikesController.swift; sourceTree = "<group>"; };
 		354F393724F2A92C00B0D83F /* CommentController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentController.swift; sourceTree = "<group>"; };
 		355E650B24CE13A100ADDDDB /* FollowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowController.swift; sourceTree = "<group>"; };
@@ -230,6 +232,7 @@
 				35CC06F424E03811000224FC /* SelectPhotoCell.swift */,
 				35CC06F624E0386F000224FC /* SelectPhotoHeader.swift */,
 				351C4B7424E94DB4000C2443 /* FeedCell.swift */,
+				352D623724FBCEB900408BD6 /* CommentCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -413,6 +416,7 @@
 				35AAFB9524C9D2270072CDB2 /* User.swift in Sources */,
 				359050C324C89C730093722D /* UploadPostController.swift in Sources */,
 				359050BF24C87F0D0093722D /* FeedController.swift in Sources */,
+				352D623824FBCEB900408BD6 /* CommentCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
