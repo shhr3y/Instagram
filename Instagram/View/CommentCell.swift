@@ -20,17 +20,17 @@ class CommentCell: UICollectionViewCell {
     }()
     
     private let usernameLabel: UIButton = {
-        let button = UIButton()
+        let button = UIButton(type: .system)
         button.setTitle("username", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         button.setTitleColor(.black, for: .normal)
         return button
     }()
     
-    private let commentLabel: UILabel = {
+    lazy var commentLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 15)
-        label.text = "this is a test comment for this post"
+        label.text = "this is test comment: "
         return label
     }()
     
